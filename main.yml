@@ -15,21 +15,19 @@
 
   tasks:
 
-  #- name: "mi assicuro che il template da cui clonare sia spento"
-  #  vmware_guest:
-  #      cluster: 'Shared Cluster'
-  #      datacenter: 'Shared Cluster'
-  #      #folder: "/vm/IMG Italy 47 6100/R&D/Quality Assurance/Test Install Scalati"
-  #      password: "{{ vcenter_pass }}"
-  #      username: "{{ vcenter_user }}"
-  #      state: poweredoff
-  #      name: "{{ item.0 }}"
-  #      hostname: "{{ vcenter_host }}"
-  #      validate_certs: false
+  - name: Mi assicuro che il clone del template tpl-centos7-rapidosmall-cti1 venga fatto a macchina spenta
+    vmware_guest:
+      hostname: "{{ vcenter_host }}"
+      username: "{{ vcenter_user }}"
+      password: "{{ vcenter_pass }}"
+      validate_certs: no
+      name: 'tpl-centos7-rapidosmall-cti1'
+      state: poweredoff
+    delegate_to: localhost
 
 
   - name: "mi assicuro che la macchina non sia presente"
-    include_tasks: elimina_vm.yml
+    include_tasks: include/elimina_vm.yml
     with_items:
     - ['scalato-cti1','scalato-ipt1','scalato-msa1']
    
