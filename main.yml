@@ -123,12 +123,10 @@
     - 'msad@4.service'
     - 'msad@5.service'
     - 'msad@6.service'
-    - 'nrpe.service'
     - 'pm2-reicom.service'
     - 'rtpproxy@*.service'
     - 'sems.service'
     - 'tomcat.service'
-    - 'snmpd.service'
     - 'slapd.service'
     - 'redis.service'
     
