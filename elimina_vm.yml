@@ -1,0 +1,12 @@
+- vmware_guest:
+        cluster: 'Shared Cluster'
+        datacenter: 'Shared Cluster'
+        folder: "/vm/IMG Italy 47 6100/R&D/Quality Assurance/Test Install Scalati"
+        password: "{{ vcenter_pass }}"
+        username: "{{ vcenter_user }}"
+        state: absent
+        force: true
+        name: "{{ item }}"
+        hostname: "{{ vcenter_host }}"
+        validate_certs: false
+

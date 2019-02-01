@@ -1,0 +1,139 @@
+- name: Creo le virtual machine
+  hosts: localhost
+  connection: local
+  vars_prompt:
+    - name: "vcenter_host"
+      prompt: "Inserisci il nome del vcenter"
+      private: no
+      default: "uk-vcenter-001.edge.local"
+    - name: "vcenter_user"
+      prompt: "Inserisci lo username per loggarti al VCENTER"
+      private: no
+    - name: "vcenter_pass"
+      prompt: "Inserisci la password per loggarti al VCENTER"
+      private: yes
+
+  tasks:
+
+  #- name: "mi assicuro che il template da cui clonare sia spento"
+  #  vmware_guest:
+  #      cluster: 'Shared Cluster'
+  #      datacenter: 'Shared Cluster'
+  #      #folder: "/vm/IMG Italy 47 6100/R&D/Quality Assurance/Test Install Scalati"
+  #      password: "{{ vcenter_pass }}"
+  #      username: "{{ vcenter_user }}"
+  #      state: poweredoff
+  #      name: "{{ item.0 }}"
+  #      hostname: "{{ vcenter_host }}"
+  #      validate_certs: false
+
+
+  - name: "mi assicuro che la macchina non sia presente"
+    include_tasks: elimina_vm.yml
+    with_items:
+    - ['scalato-cti1','scalato-ipt1','scalato-msa1']
+   
+
+
+  - name: "Creo la virtual machine"
+    vmware_guest:
+        annotation: "[ANSIBLE]"
+        cluster: 'Shared Cluster'
+        datacenter: 'Shared Cluster'
+        folder: "/vm/IMG Italy 47 6100/R&D/Quality Assurance/Test Install Scalati"
+        password: "{{ vcenter_pass }}"
+        username: "{{ vcenter_user }}"
+        state: poweredon
+        wait_for_ip_address: yes
+        name: "{{ item.0 }}"
+        hostname: "{{ vcenter_host }}"
+        template: 'tpl-centos7-rapidosmall-cti1'
+        validate_certs: false
+        networks:
+        - name: 'IMG Italy 47 6100 - 355'
+          ip: "{{ item.1 }}"
+          netmask: '255.255.254.0'
+          gateway: '10.51.54.1'
+        customization:
+                dns_servers:
+                - 10.50.12.5
+                - 10.50.13.5
+                domain: enghouse.com
+                hostname: "{{ item.0 }}"
+    with_together:
+    - ['scalato-cti1','scalato-ipt1','scalato-msa1']
+    - ['10.51.55.180','10.51.55.181','10.51.55.182']
+
+  - file: dest=/tmp/.DNS state=absent
+
+  - name: Creo il file con le associazioni DNS
+    lineinfile: 
+        create: true
+        dest: /tmp/.DNS
+        state: present
+        line: "{{ item.0 }};{{ item.1 }}"
+    with_together:
+    - ['scalato-cti1','scalato-ipt1','scalato-msa1']
+    - ['10.51.55.180','10.51.55.181','10.51.55.182']
+  - mail:
+        subject: '[ANSIBLE] Inserimento nuovi server in DNS'
+        to: Martino.Vigano@enghouse.com
+        from: ansible@reitek.com
+        body: "{{ lookup('file', '/tmp/.DNS') }}"
+
+  - name: creazione degli snapshot iniziali
+    vmware_guest_snapshot:
+     hostname: "{{ vcenter_host }}"
+     username: "{{ vcenter_user }}"
+     password: "{{ vcenter_pass }}"
+     datacenter: 'Shared Cluster'
+     folder: "/vm/IMG Italy 47 6100/R&D/Quality Assurance/Test Install Scalati"
+     name: "{{ item.0 }}"
+     state: present
+     snapshot_name: DEPLOY
+     description: IL Server Appena deployato da template
+     validate_certs: false
+    with_together:
+    - ['scalato-cti1','scalato-ipt1','scalato-msa1']
+    - ['10.51.55.180','10.51.55.181','10.51.55.182']
+  
+  - name: aggiungo i nuovi hosts all'inventory
+    add_host:
+        name: "{{ item.0 }}"
+        ansible_ssh_host: "{{ item.1 }}"
+        group: newinstall
+    with_together:
+    - ['scalato-cti1','scalato-ipt1','scalato-msa1']
+    - ['10.51.55.180','10.51.55.181','10.51.55.182']
+
+- name: Operazioni comuni a tutti i server
+  hosts: newinstall
+  gather_facts: false
+
+  tasks:
+  - name: Parto da un server che non ha servizi attivi
+    systemd: enabled=false state=stopped name={{ item }}
+    with_items:
+    - 'opensips.service'
+    - 'contact.target'
+    - 'crond.service'
+    - 'httpd.service'
+    - 'msac.service'
+    - 'msad@1.service'
+    - 'msad@2.service'
+    - 'msad@3.service'
+    - 'msad@4.service'
+    - 'msad@5.service'
+    - 'msad@6.service'
+    - 'nrpe.service'
+    - 'ntpd.service'
+    - 'pm2-reicom.service'
+    - 'rtpproxy@*.service'
+    - 'sems.service'
+    - 'tomcat.service'
+    - 'snmpd.service'
+    - 'slapd.service'
+    - 'redis.service'
+
+
+
