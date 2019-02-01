@@ -1,0 +1,14 @@
+- name: Rimuovo tutte le entry di server nel file di configurazione di ntpd
+  lineinfile:
+    backup: true
+    state: absent
+    dest: /etc/ntp.conf
+    regexp: '^server'
+
+- name: Inserisco la direttiva server nel file di configurazione di ntpd
+  lineinfile:
+    dest: /etc/ntp.conf
+    line: "server {{ ntp_server }}"
+    
+- name: Riavvio il servizio ntpd
+  service: name=ntpd state=restarted

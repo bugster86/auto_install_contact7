@@ -124,7 +124,6 @@
     - 'msad@5.service'
     - 'msad@6.service'
     - 'nrpe.service'
-    - 'ntpd.service'
     - 'pm2-reicom.service'
     - 'rtpproxy@*.service'
     - 'sems.service'
@@ -132,6 +131,10 @@
     - 'snmpd.service'
     - 'slapd.service'
     - 'redis.service'
+    
+  - include_tasks: include/set_ntp_server.yml
+    when: ntp_server is defined
+    
 
 
 
