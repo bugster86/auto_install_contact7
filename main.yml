@@ -20,7 +20,7 @@
         name: configurazione
 
   - name: stampo la configurazione
-    debug: var={{ configurazione }}
+    debug: var=configurazione
       
 
   - name: "Mi assicuro che il clone del template {{  configurazione | json_query('template_cti_scalato') }} venga fatto a macchina spenta"
