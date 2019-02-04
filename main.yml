@@ -40,7 +40,7 @@
    
 
   - name: "Creo la virtual machine"
-    include_tasks: include/creo_vm.yml 
+    include_tasks: include/crea_vm.yml 
     with_together:
     - "{{  configurazione | json_query('servers[*].name') }}"
     - "{{  configurazione | json_query('servers[*].ip') }}"
