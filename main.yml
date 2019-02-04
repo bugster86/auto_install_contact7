@@ -92,6 +92,10 @@
   gather_facts: false
 
   tasks:
+  - name: Carico in memoria la configurazione
+    include_vars:
+        file: config.json
+        name: configurazione
   - name: Parto da un server che non ha servizi attivi
     systemd: enabled=false state=stopped name={{ item }}
     with_items:
