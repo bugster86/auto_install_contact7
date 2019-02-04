@@ -8,7 +8,7 @@
 - name: Inserisco la direttiva server nel file di configurazione di ntpd
   lineinfile:
     dest: /etc/ntp.conf
-    line: "server {{ ntp_server }}"
+    line: "server {{ configurazione | json_query('ntp_server') }}"
     
 - name: Riavvio il servizio ntpd
   service: name=ntpd state=restarted

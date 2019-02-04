@@ -14,53 +14,36 @@
       private: yes
 
   tasks:
+  - name: Carico in memoria la configurazione
+    include_vars:
+        file: config.json
+        name: configurazione
 
-  - name: Mi assicuro che il clone del template tpl-centos7-rapidosmall-cti1 venga fatto a macchina spenta
+  - name: stampo la configurazione
+    debug: var={{ configurazione }}
+      
+
+  - name: "Mi assicuro che il clone del template {{  configurazione | json_query('template_cti_scalato') }} venga fatto a macchina spenta"
     vmware_guest:
       hostname: "{{ vcenter_host }}"
       username: "{{ vcenter_user }}"
       password: "{{ vcenter_pass }}"
       validate_certs: no
-      name: 'tpl-centos7-rapidosmall-cti1'
+      name: "{{  configurazione | json_query('template_cti_scalato') }}"
       state: poweredoff
     delegate_to: localhost
 
-
-  - name: "mi assicuro che la macchina non sia presente"
+  - name: "Mi assicuro che la macchina non sia presente"
     include_tasks: include/elimina_vm.yml
     with_items:
-    - ['scalato-cti1','scalato-ipt1','scalato-msa1']
+    - "{{  configurazione | json_query('servers[*].name') }}"
    
 
-
   - name: "Creo la virtual machine"
-    vmware_guest:
-        annotation: "[ANSIBLE]"
-        cluster: 'Shared Cluster'
-        datacenter: 'Shared Cluster'
-        folder: "/vm/IMG Italy 47 6100/R&D/Quality Assurance/Test Install Scalati"
-        password: "{{ vcenter_pass }}"
-        username: "{{ vcenter_user }}"
-        state: poweredon
-        wait_for_ip_address: yes
-        name: "{{ item.0 }}"
-        hostname: "{{ vcenter_host }}"
-        template: 'tpl-centos7-rapidosmall-cti1'
-        validate_certs: false
-        networks:
-        - name: 'IMG Italy 47 6100 - 355'
-          ip: "{{ item.1 }}"
-          netmask: '255.255.254.0'
-          gateway: '10.51.54.1'
-        customization:
-                dns_servers:
-                - 10.50.12.5
-                - 10.50.13.5
-                domain: enghouse.com
-                hostname: "{{ item.0 }}"
+    
     with_together:
-    - ['scalato-cti1','scalato-ipt1','scalato-msa1']
-    - ['10.51.55.180','10.51.55.181','10.51.55.182']
+    - "{{  configurazione | json_query('servers[*].name') }}"
+    - "{{  configurazione | json_query('servers[*].ip') }}"
 
   - file: dest=/tmp/.DNS state=absent
 
@@ -71,8 +54,9 @@
         state: present
         line: "{{ item.0 }};{{ item.1 }}"
     with_together:
-    - ['scalato-cti1','scalato-ipt1','scalato-msa1']
-    - ['10.51.55.180','10.51.55.181','10.51.55.182']
+    - "{{  configurazione | json_query('servers[*].name') }}"
+    - "{{  configurazione | json_query('servers[*].ip') }}"
+    
   - mail:
         subject: '[ANSIBLE] Inserimento nuovi server in DNS'
         to: Martino.Vigano@enghouse.com
@@ -84,16 +68,15 @@
      hostname: "{{ vcenter_host }}"
      username: "{{ vcenter_user }}"
      password: "{{ vcenter_pass }}"
-     datacenter: 'Shared Cluster'
-     folder: "/vm/IMG Italy 47 6100/R&D/Quality Assurance/Test Install Scalati"
+     datacenter: {{  configurazione | json_query('datacenter') }}"
+     folder: {{  configurazione | json_query('folder') }}"
      name: "{{ item.0 }}"
      state: present
      snapshot_name: DEPLOY
      description: IL Server Appena deployato da template
      validate_certs: false
-    with_together:
-    - ['scalato-cti1','scalato-ipt1','scalato-msa1']
-    - ['10.51.55.180','10.51.55.181','10.51.55.182']
+    with_items:
+    - "{{  configurazione | json_query('servers[*].name') }}"
   
   - name: aggiungo i nuovi hosts all'inventory
     add_host:
@@ -101,8 +84,8 @@
         ansible_ssh_host: "{{ item.1 }}"
         group: newinstall
     with_together:
-    - ['scalato-cti1','scalato-ipt1','scalato-msa1']
-    - ['10.51.55.180','10.51.55.181','10.51.55.182']
+    - "{{  configurazione | json_query('servers[*].name') }}"
+    - "{{  configurazione | json_query('servers[*].ip') }}"
 
 - name: Operazioni comuni a tutti i server
   hosts: newinstall
@@ -131,11 +114,11 @@
     - 'redis.service'
     
   - include_tasks: include/set_ntp_server.yml
-    when: ntp_server is defined
+    when: {{ configurazione | json_query('ntp_server') }} is defined
   
   - include_tasks: include/modifica_etichette.yml  
     
-  - include_tasks: 
+  - include_tasks: include/costruisci_hosts.yml
     
 
 

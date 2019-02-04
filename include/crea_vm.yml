@@ -1,0 +1,24 @@
+- vmware_guest:
+    annotation: "[ANSIBLE]"
+    cluster: {{  configurazione | json_query('cluster') }}"
+    datacenter: {{  configurazione | json_query('datacenter') }}"
+    folder: {{  configurazione | json_query('folder') }}"
+    password: "{{ vcenter_pass }}"
+    username: "{{ vcenter_user }}"
+    state: poweredon
+    wait_for_ip_address: yes
+    name: "{{ item.0 }}"
+    hostname: "{{ vcenter_host }}"
+    template: {{  configurazione | json_query('template_cti_scalato') }}"
+    validate_certs: false
+    networks:
+    - name: {{  configurazione | json_query('vlan') }}"
+      ip: "{{ item.1 }}"
+      netmask: {{  configurazione | json_query('netmask') }}"
+      gateway: {{  configurazione | json_query('gateway') }}"
+    customization:
+            dns_servers:
+            - {{  configurazione | json_query('dns1') }}"
+            - {{  configurazione | json_query('dns1') }}"
+            domain: {{  configurazione | json_query('domain') }}"
+            hostname: "{{ item.0 }}"
