@@ -70,7 +70,7 @@
      password: "{{ vcenter_pass }}"
      datacenter: "{{  configurazione | json_query('datacenter') }}"
      folder: "{{  configurazione | json_query('folder') }}"
-     name: "{{ item.0 }}"
+     name: "{{ item }}"
      state: present
      snapshot_name: DEPLOY
      description: IL Server Appena deployato da template
