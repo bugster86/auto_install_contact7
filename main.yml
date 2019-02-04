@@ -114,7 +114,7 @@
     - 'redis.service'
     
   - include_tasks: include/set_ntp_server.yml
-    when: "{{ configurazione | json_query('ntp_server') }} is defined"
+    when: "configurazione | json_query('ntp_server')  is defined"
   
   - include_tasks: include/modifica_etichette.yml  
     
