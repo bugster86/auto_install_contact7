@@ -116,6 +116,7 @@
     - 'tomcat.service'
     - 'slapd.service'
     - 'redis.service'
+    - 'rasd.service'
     
   - include_tasks: include/set_ntp_server.yml
     when: "configurazione | json_query('ntp_server')  is defined"
