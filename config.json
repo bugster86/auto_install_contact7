@@ -9,8 +9,8 @@
 "ntp_server": "1.1.1.1",
 
 "servers": [
-         { "name": "scalato-cti1" , "ip": "10.51.55.180" },
-        { "name": "scalato-ipt1" , "ip": "10.51.55.181" },
+         { "name": "scalato-cti1" , "ip": "10.51.55.180" , "vram": 2048 , "vcpu": 3 , "vsocket": 2  },
+        { "name": "scalato-ipt1" , "ip": "10.51.55.181" , "vcpu": 8},
        ],
          
          

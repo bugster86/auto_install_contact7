@@ -44,6 +44,11 @@
     with_together:
     - "{{  configurazione | json_query('servers[*].name') }}"
     - "{{  configurazione | json_query('servers[*].ip') }}"
+    
+  - name: personalizzo le virtual machine
+    include_tasks: personalizza_vmachine.yml
+    with_items:
+    -  "{{  configurazione | json_query('servers') }}"   
 
   - file: dest=/tmp/.DNS state=absent
 

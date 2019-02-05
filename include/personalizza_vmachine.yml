@@ -1,0 +1,46 @@
+- vmware_guest:
+    annotation: "[ANSIBLE]"
+    cluster: "{{  configurazione | json_query('cluster') }}"
+    datacenter: "{{  configurazione | json_query('datacenter') }}"
+    folder: "{{  configurazione | json_query('folder') }}"
+    password: "{{ vcenter_pass }}"
+    username: "{{ vcenter_user }}"
+    state: present
+    name: "{{ item.0 }}"
+    hostname: "{{ vcenter_host }}"
+    validate_certs: false
+    hardware:
+    - memory_mb: "{{ item.vram }}"
+  when: item.vram is defined  
+  
+- vmware_guest:
+    annotation: "[ANSIBLE]"
+    cluster: "{{  configurazione | json_query('cluster') }}"
+    datacenter: "{{  configurazione | json_query('datacenter') }}"
+    folder: "{{  configurazione | json_query('folder') }}"
+    password: "{{ vcenter_pass }}"
+    username: "{{ vcenter_user }}"
+    state: present
+    name: "{{ item.0 }}"
+    hostname: "{{ vcenter_host }}"
+    validate_certs: false
+    hardware:
+    - num_cpus: "{{ item.vcpu }}"
+  when: item.vcpu is defined
+
+- vmware_guest:
+    annotation: "[ANSIBLE]"
+    cluster: "{{  configurazione | json_query('cluster') }}"
+    datacenter: "{{  configurazione | json_query('datacenter') }}"
+    folder: "{{  configurazione | json_query('folder') }}"
+    password: "{{ vcenter_pass }}"
+    username: "{{ vcenter_user }}"
+    state: present
+    name: "{{ item.0 }}"
+    hostname: "{{ vcenter_host }}"
+    validate_certs: false
+    hardware:
+    - num_cpu_cores_per_socket: "{{ item.vsocket }}"
+  when: item.vsocket is defined    
+  
+  
