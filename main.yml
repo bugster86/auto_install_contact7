@@ -8,6 +8,7 @@
       default: "uk-vcenter-001.edge.local"
     - name: "vcenter_user"
       prompt: "Inserisci lo username per loggarti al VCENTER"
+      default: "Martino.Vigano@enghouse.com"
       private: no
     - name: "vcenter_pass"
       prompt: "Inserisci la password per loggarti al VCENTER"

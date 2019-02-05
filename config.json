@@ -1,22 +1,33 @@
 {
-"template_cti_scalato": "tpl-centos7-rapidosmall-cti1",
-"netmask": "255.255.255.0",
-"gateway": "10.51.54.1",
-"dns1": "10.50.12.5",
-"dns2": "10.50.13.5",
-"domain": "enghouse.com",
-"vlan": "IMG Italy 47 6100 - 355",
-"ntp_server": "1.1.1.1",
+	"template_cti_scalato": "tpl-centos7-rapidosmall-cti1",
+	"netmask": "255.255.255.0",
+	"gateway": "10.51.54.1",
+	"dns1": "10.50.12.5",
+	"dns2": "10.50.13.5",
+	"domain": "enghouse.com",
+	"vlan": "IMG Italy 47 6100 - 355",
+	"ntp_server": "1.1.1.1",
 
-"servers": [
-         { "name": "scalato-cti1" , "ip": "10.51.55.180" , "vram": 2048 , "vcpu": 3 , "vsocket": 2  },
-        { "name": "scalato-ipt1" , "ip": "10.51.55.181" , "vcpu": 8},
-       ],
-         
-         
-"_comment" : "I dati che riguardano il punto in cui posizionare le VM su cluster vmware",
-"cluster": "Shared Cluster",
-"datacenter": "Shared Cluster",
-"folder": "/vm/IMG Italy 47 6100/R&D/Quality Assurance/Test Install Scalati",
+	"servers": [{
+			"name": "scalato-cti1",
+			"ip": "10.51.55.180",
+			"vram": 2048,
+			"vcpu": 4,
+			"vsocket": 8
+		},
+		{
+			"name": "scalato-ipt1",
+			"ip": "10.51.55.181",
+			"vcpu": 2,
+			"vram": 4028,
+			"vsocket": 4
+		}
+	],
+
+
+	"_comment": "I dati che riguardano il punto in cui posizionare le VM su cluster vmware",
+	"cluster": "Shared Cluster",
+	"datacenter": "Shared Cluster",
+	"folder": "/vm/IMG Italy 47 6100/R&D/Quality Assurance/Test Install Scalati"
 
 }

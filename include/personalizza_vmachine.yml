@@ -10,7 +10,7 @@
     hostname: "{{ vcenter_host }}"
     validate_certs: false
     hardware:
-    - memory_mb: "{{ item.vram }}"
+      memory_mb: "{{ item.vram}}"
   when: item.vram is defined  
   
 - vmware_guest:
@@ -25,7 +25,7 @@
     hostname: "{{ vcenter_host }}"
     validate_certs: false
     hardware:
-    - num_cpus: "{{ item.vcpu }}"
+     num_cpus: "{{ item.vcpu }}"
   when: item.vcpu is defined
 
 - vmware_guest:
@@ -40,7 +40,7 @@
     hostname: "{{ vcenter_host }}"
     validate_certs: false
     hardware:
-    - num_cpu_cores_per_socket: "{{ item.vsocket }}"
+     num_cpu_cores_per_socket: "{{ item.vsocket }}"
   when: item.vsocket is defined    
   
   
