@@ -1,4 +1,5 @@
-- vmware_guest:
+- name: "Elimino la VM {{ item }}"
+  vmware_guest:
         cluster: 'Shared Cluster'
         datacenter: 'Shared Cluster'
         folder: "/vm/IMG Italy 47 6100/R&D/Quality Assurance/Test Install Scalati"

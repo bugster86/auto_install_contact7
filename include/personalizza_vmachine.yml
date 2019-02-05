@@ -1,4 +1,5 @@
-- vmware_guest:
+- name: "Modifica la VRAM per il server {{ item.name }}"
+  vmware_guest:
     annotation: "[ANSIBLE]"
     cluster: "{{  configurazione | json_query('cluster') }}"
     datacenter: "{{  configurazione | json_query('datacenter') }}"
@@ -12,8 +13,9 @@
     hardware:
       memory_mb: "{{ item.vram}}"
   when: item.vram is defined  
-  
-- vmware_guest:
+
+- name:  "Imposto il numero totale di vcpu per il server {{ item.name }}"
+  vmware_guest:
     annotation: "[ANSIBLE]"
     cluster: "{{  configurazione | json_query('cluster') }}"
     datacenter: "{{  configurazione | json_query('datacenter') }}"
@@ -28,7 +30,8 @@
      num_cpus: "{{ item.vcpu }}"
   when: item.vcpu is defined
 
-- vmware_guest:
+- name: "Imposto il numero di vcpu per singolo socket per il server {{ item.name }}"
+  vmware_guest:
     annotation: "[ANSIBLE]"
     cluster: "{{  configurazione | json_query('cluster') }}"
     datacenter: "{{  configurazione | json_query('datacenter') }}"
@@ -43,9 +46,8 @@
      num_cpu_cores_per_socket: "{{ item.vcpu_per_socket }}"
   when: item.vcpu_per_socket is defined
 
-- debug: var=item.dischi_aggiuntivi 
  
-- name: Creo disco
+- name: "Creo i virtual disk per il server {{ item.name }}"
   vmware_guest:
    annotation: "[ANSIBLE]"
    cluster: "{{  configurazione | json_query('cluster') }}"

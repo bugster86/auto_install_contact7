@@ -67,10 +67,11 @@
     with_together:
     - "{{  configurazione | json_query('servers[*].name') }}"
     - "{{  configurazione | json_query('servers[*].ip') }}"
-    
-  - mail:
+  
+  - name: "Invio la mail per inserire le entry in DNS"  
+    mail:
         subject: '[ANSIBLE] Inserimento nuovi server in DNS'
-        to: Martino.Vigano@enghouse.com
+        to: "{{ configurazione.lista_dns_mailto }}"
         from: ansible@reitek.com
         body: "{{ lookup('file', '/tmp/.DNS') }}"
 
