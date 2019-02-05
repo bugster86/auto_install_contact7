@@ -6,7 +6,7 @@
     password: "{{ vcenter_pass }}"
     username: "{{ vcenter_user }}"
     state: present
-    name: "{{ item.0 }}"
+    name: "{{ item.name }}"
     hostname: "{{ vcenter_host }}"
     validate_certs: false
     hardware:
@@ -21,7 +21,7 @@
     password: "{{ vcenter_pass }}"
     username: "{{ vcenter_user }}"
     state: present
-    name: "{{ item.0 }}"
+    name: "{{ item.name }}"
     hostname: "{{ vcenter_host }}"
     validate_certs: false
     hardware:
@@ -36,7 +36,7 @@
     password: "{{ vcenter_pass }}"
     username: "{{ vcenter_user }}"
     state: present
-    name: "{{ item.0 }}"
+    name: "{{ item.name }}"
     hostname: "{{ vcenter_host }}"
     validate_certs: false
     hardware:
