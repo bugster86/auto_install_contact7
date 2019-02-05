@@ -13,14 +13,14 @@
 			"ip": "10.51.55.180",
 			"vram": 2048,
 			"vcpu": 4,
-			"vsocket": 8
+			"vcpu_per_socket": 2
 		},
 		{
 			"name": "scalato-ipt1",
 			"ip": "10.51.55.181",
-			"vcpu": 2,
+			"vcpu": 8,
 			"vram": 4028,
-			"vsocket": 4
+			"vcpu_per_socket": 2
 		}
 	],
 
