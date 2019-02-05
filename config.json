@@ -20,7 +20,8 @@
 			"ip": "10.51.55.181",
 			"vcpu": 8,
 			"vram": 4028,
-			"vcpu_per_socket": 2
+			"vcpu_per_socket": 2,
+      "dischi_aggiuntivi": [{"size_gb": 10,"type": "thin" , "datastore": "Datastore 8 - E8"},{"size_gb": 15,"type": "thin" , "datastore": "Datastore 8 - E8"}]
 		}
 	],
 

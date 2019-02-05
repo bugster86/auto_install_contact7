@@ -41,6 +41,21 @@
     validate_certs: false
     hardware:
      num_cpu_cores_per_socket: "{{ item.vcpu_per_socket }}"
-  when: item.vcpu_per_socket is defined    
+  when: item.vcpu_per_socket is defined
+  
+  - vmware_guest:
+      annotation: "[ANSIBLE]"
+      cluster: "{{  configurazione | json_query('cluster') }}"
+      datacenter: "{{  configurazione | json_query('datacenter') }}"
+      folder: "{{  configurazione | json_query('folder') }}"
+      password: "{{ vcenter_pass }}"
+      username: "{{ vcenter_user }}"
+      state: present
+      name: "{{ item.name }}"
+      hostname: "{{ vcenter_host }}"
+      validate_certs: false
+      disk:
+      - item.dischi_aggiuntivi
+    when: item.dischi_aggiuntivi is defined        
   
   
