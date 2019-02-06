@@ -19,3 +19,6 @@
 - name: Elimino il file /etc/cron.d/opensips_checker.cron se non sono sulla cti1
   file: dest=/etc/cron.d/opensips_checker.cron state=absent
   when: inventory_hostname.find('cti1') == -1
+  
+- shell: rm -fr /var/www/html/*
+  changed_when: false  
