@@ -12,7 +12,7 @@
 ####################################################################################
 {% for item in configurazione | json_query('servers') %}
 {% if item.name is search ("-ecas*") %}
-{{ item.ip }}   {{ item.name }}.{{ configurazione | json_query('domain') }}   {{ item.name }} 
+{{ item.ip }}   {{ item.name }}.{{ configurazione | json_query('domain') }}   {{ item.name }} {% if item.name is search ("-ecas1") %} easycim.callback.service easycim.callback.services.reitek.com easycim.services.reitek.com ec-host easycim3-host easycim3.services.reitek.com easyintegration.reitek.com {% endif %}
 {% fi %}
 {% endfor %}
 ####################################################################################

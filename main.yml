@@ -100,7 +100,7 @@
 
 - name: Operazioni comuni a tutti i server
   hosts: newinstall
-  gather_facts: false
+  gather_facts: true
 
   tasks:
   - name: Carico in memoria la configurazione
