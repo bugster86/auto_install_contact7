@@ -1,3 +1,13 @@
+- name: "Mi assicuro che il  template {{ item.template }} sia spento"
+  vmware_guest:
+    hostname: "{{ vcenter_host }}"
+    username: "{{ vcenter_user }}"
+    password: "{{ vcenter_pass }}"
+    validate_certs: no
+    name: "{{ item.template }}"
+    state: poweredoff
+  delegate_to: localhost
+
 - vmware_guest:
     annotation: "[ANSIBLE]"
     cluster: "{{  configurazione | json_query('cluster') }}"

@@ -23,17 +23,6 @@
   - name: stampo la configurazione
     debug: var=configurazione
       
-
-  - name: "Mi assicuro che il clone del template {{  configurazione | json_query('template_cti_scalato') }} venga fatto a macchina spenta"
-    vmware_guest:
-      hostname: "{{ vcenter_host }}"
-      username: "{{ vcenter_user }}"
-      password: "{{ vcenter_pass }}"
-      validate_certs: no
-      name: "{{  configurazione | json_query('template_cti_scalato') }}"
-      state: poweredoff
-    delegate_to: localhost
-
   - name: "Mi assicuro che la macchina non sia presente"
     include_tasks: include/elimina_vm.yml
     with_items:
