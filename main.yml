@@ -169,6 +169,20 @@
   tasks:
   - include_tasks: include/operazioni_stc.yml
   
+- name: Operazioni comuni ai server ecas
+  hosts: "*-ecas*"
+  gather_facts: true  
+  
+  tasks:
+  - include_tasks: include/operazioni_ecas.yml  
+  
+- name: Operazioni comuni ai server ecdb
+  hosts: "*-ecdb*"
+  gather_facts: true  
+  
+  tasks:
+  - include_tasks: include/operazioni_ecdb.yml  
+  
 - name: Riavvio finale dei server
   hosts: newinstall
   gather_facts: true
