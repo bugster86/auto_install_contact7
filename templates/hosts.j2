@@ -1,0 +1,41 @@
+127.0.0.1       localhost localhost.localdomain
+####################################################################################
+#                 SISTEMA CONTACT
+####################################################################################
+{% for item in {{ configurazione | json_query('servers') }} %}
+{% if item.name is search ("-cti*|-ipt*|-msa*|-stc*") %}
+{{ item.ip }}   {{ item.name }}.{{ configurazione | json_query('domain') }}   {{ item.name }} 
+{% fi %}
+{% endfor %}
+####################################################################################
+#                 APPLICATIVI EASYCIM
+####################################################################################
+{% for item in {{ configurazione | json_query('servers') }} %}
+{% if item.name is search ("-ecas*") %}
+{{ item.ip }}   {{ item.name }}.{{ configurazione | json_query('domain') }}   {{ item.name }} 
+{% fi %}
+{% endfor %}
+####################################################################################
+#                 BALANCER
+####################################################################################
+{% for item in {{ configurazione | json_query('servers') }} %}
+{% if item.name is search ("-bal*") %}
+{{ item.ip }}   {{ item.name }}.{{ configurazione | json_query('domain') }}   {{ item.name }} 
+{% fi %}
+{% endfor %}
+####################################################################################
+#                 DATABASE
+####################################################################################
+{% for item in {{ configurazione | json_query('servers') }} %}
+{% if item.name is search ("-ecdb*") %}
+{{ item.ip }}   {{ item.name }}.{{ configurazione | json_query('domain') }}   {{ item.name }} 
+{% fi %}
+{% endfor %}
+####################################################################################
+#                 CUSTOM SERVER
+####################################################################################
+{% for item in {{ configurazione | json_query('servers') }} %}
+{% if item.name is search ("-as*") %}
+{{ item.ip }}   {{ item.name }}.{{ configurazione | json_query('domain') }}   {{ item.name }} 
+{% fi %}
+{% endfor %}
