@@ -32,6 +32,15 @@
 {% fi %}
 {% endfor %}
 ####################################################################################
+#                 REGISTRATORI
+####################################################################################
+{% for item in configurazione | json_query('servers') %}
+{% if item.name is search ("-erep*|-rec*") %}
+{{ item.ip }}   {{ item.name }}.{{ configurazione | json_query('domain') }}   {{ item.name }} 
+{% fi %}
+{% endfor %}
+
+####################################################################################
 #                 CUSTOM SERVER
 ####################################################################################
 {% for item in configurazione | json_query('servers') %}
