@@ -1,0 +1,21 @@
+- name: rimuovo file di cron che non devono essere sulla cti
+  file: 
+    dest: "{{ item }}"
+    state: absent
+  with_items:
+  - /etc/cron.d/backup_gateway.cron
+  - /etc/cron.d/canc_cache_vxml.cron
+  - /etc/cron.d/extract_audio.cron
+  - /etc/cron.d/msachk.crontab
+  - /etc/cron.d/msa.crontab
+  - /etc/cron.d/msa_remove_cache_file.cron
+  - /etc/cron.d/rasd_reload.cron
+  - /etc/cron.d/tomcat.cron
+  - /etc/cron.d/stat_log_importer.cron
+  - /etc/cron.d/check_x2l.cron
+  - /etc/cron.d/monitor_scalar.cron
+  - /etc/cron.d/stat_log_importer.cron
+  
+- name: Elimino il file /etc/cron.d/opensips_checker.cron se non sono sulla cti1
+  file: dest=/etc/cron.d/opensips_checker.cron state=absent
+  when: inventory_hostname.find('cti1') == -1

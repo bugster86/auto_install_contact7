@@ -138,13 +138,44 @@
   
   - name: Spengo il servizio rsyslog
     service: name=rsyslog state=started 
-  
-  - include_tasks: include/modifica_etichette.yml  
     
   - include_tasks: include/costruisci_hosts.yml
   
-  - name: Riavvio finale del server
-    reboot:
+- name: Operazioni comuni ai server cti
+  hosts: "*-cti*"
+  gather_facts: true
+  
+  tasks:
+  - include_tasks:  include/operazioni_cti.yml
+  
+- name: Operazioni comuni ai server ipt
+  hosts: "*-ipt*"
+  gather_facts: true
+  
+  tasks:
+  - include_tasks: include/operazioni_ipt.yml
+  
+- name: Operazioni comuni ai server msa
+  hosts: "*-msa*"
+  gather_facts: true
+  
+  tasks:
+  - include_tasks: include/operazioni_msa.yml
+  
+- name: Operazioni comuni ai server stc
+  hosts: "*-stc*"
+  gather_facts: true  
+  
+  tasks:
+  - include_tasks: include/operazioni_stc.yml
+  
+- name: Riavvio finale dei server
+  hosts: newinstall
+  gather_facts: true
+  
+  tasks:
+  - reboot:
+  
     
 
 
