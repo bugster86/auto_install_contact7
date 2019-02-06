@@ -29,6 +29,19 @@
       "dischi_custom": [{"size_gb": 80,"type": "thin" , "datastore": "Datastore 8 - E8"},{"size_gb": 90,"type": "thin" , "datastore": "Datastore 8 - E8"}]
 		}
 	],
+	
+	"virtual_ip" : [
+		 {
+			 "ip": "10.10.10.30",
+			 "name" :  "scalato-tnt-master"
+		 },
+		 {
+			 "ip": "10.10.10.31",
+			 "name" :  "scalato-ctrl-master"
+		 }
+		 
+		
+	],
 
 
 	"_comment": "I dati che riguardano il punto in cui posizionare le VM su cluster vmware",
