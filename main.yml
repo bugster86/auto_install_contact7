@@ -142,6 +142,9 @@
   - include_tasks: include/modifica_etichette.yml  
     
   - include_tasks: include/costruisci_hosts.yml
+  
+  - name: Riavvio finale del server
+    reboot:
     
 
 
