@@ -121,6 +121,24 @@
   - include_tasks: include/set_ntp_server.yml
     when: "configurazione | json_query('ntp_server')  is defined"
   
+  - name: Cancella eventuali file che sono del template e non devono essere sul server appena deployato
+    shell: rm -fr /root/1 /root/*.rpm /root/core.* /home/reicom/core.* /home/reicom/stacktrace.* /root/fast_deploy.sh* /root/oradiag_root /root/rpmbuild /root/systemDefaultValues.sh /var/opt/reitek/ct6/ctistat/* /var/opt/reitek/ct6/procstat/* 
+    check_mode: false
+    
+  - name: Rimuovo vecchi file di backup di ansible  
+    shell: find /etc /opt /var -type f -name "*@*~" -delete
+    check_mode: false
+    
+  - name: Spengo il servizio rsyslog
+    service: name=rsyslog state=stopped
+  
+  - name: Rimuovo tutti i log del server
+    shell: find /var/log -type f -delete      
+    check_mode: false
+  
+  - name: Spengo il servizio rsyslog
+    service: name=rsyslog state=started 
+  
   - include_tasks: include/modifica_etichette.yml  
     
   - include_tasks: include/costruisci_hosts.yml
