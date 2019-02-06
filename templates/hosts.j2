@@ -4,7 +4,7 @@
 ####################################################################################
 {% for item in configurazione | json_query('servers') %}
 {% if item.name is search ("-cti*|-ipt*|-msa*|-stc*") %}
-{{ item.ip }}   {{ item.name }}.{{ configurazione | json_query('domain') }}   {{ item.name }} 
+{{ item.ip }}   {{ item.name }}.{{ configurazione | json_query('domain') }}   {{ item.name }} {% if item.name is search ("-cti1") %} redis-host  cti-host{% endif %} {% if item.name is search ("-stc1") %}easycim.ct6service.reitek.com{% endif %} 
 {% fi %}
 {% endfor %}
 ####################################################################################
