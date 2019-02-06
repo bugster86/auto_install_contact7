@@ -1,5 +1,4 @@
 {
-	"template_cti_scalato": "tpl-centos7-rapidosmall-cti1",
 	"netmask": "255.255.255.0",
 	"gateway": "10.51.54.1",
 	"dns1": "10.50.12.5",
@@ -10,9 +9,10 @@
 	"pool_vmware": "IMG Italy 47 6100",
 	
 	
-	"lista_dns_mailto": ["Martino.Vigano@enghouse.com","Stefano.Galli@enghouse.com"],
+	"lista_dns_mailto": ["Martino.Vigano@enghouse.com"],
 
 	"servers": [{
+		  "template": "tpl-centos7-rapidosmall-cti1",
 			"name": "scalato-cti1",
 			"ip": "10.51.55.180",
 			"vram": 2048,
@@ -20,12 +20,13 @@
 			"vcpu_per_socket": 2
 		},
 		{
+			"template": "tpl-centos7-rapidosmall-cti1",
 			"name": "scalato-ipt1",
 			"ip": "10.51.55.181",
 			"vcpu": 8,
 			"vram": 4028,
 			"vcpu_per_socket": 2,
-      "dischi_aggiuntivi": [{"size_gb": 80,"type": "thin" , "datastore": "Datastore 8 - E8"},{"size_gb": 90,"type": "thin" , "datastore": "Datastore 8 - E8"}]
+      "dischi_custom": [{"size_gb": 80,"type": "thin" , "datastore": "Datastore 8 - E8"},{"size_gb": 90,"type": "thin" , "datastore": "Datastore 8 - E8"}]
 		}
 	],
 

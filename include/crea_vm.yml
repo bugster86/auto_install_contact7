@@ -6,14 +6,14 @@
     password: "{{ vcenter_pass }}"
     username: "{{ vcenter_user }}"
     state: present
-    name: "{{ item.0 }}"
+    name: "{{ item.name }}"
     resource_pool: "{{  configurazione | json_query('pool_vmware') }}"
     hostname: "{{ vcenter_host }}"
-    template: "{{  configurazione | json_query('template_cti_scalato') }}"
+    template: "{{  item.template }}"
     validate_certs: false
     networks:
     - name: "{{  configurazione | json_query('vlan') }}"
-      ip: "{{ item.1 }}"
+      ip: "{{ item.ip }}"
       netmask: "{{  configurazione | json_query('netmask') }}"
       gateway: "{{  configurazione | json_query('gateway') }}"
     customization:
@@ -21,4 +21,4 @@
             - "{{  configurazione | json_query('dns1') }}"
             - "{{  configurazione | json_query('dns1') }}"
             domain: "{{  configurazione | json_query('domain') }}"
-            hostname: "{{ item.0 }}"
+            hostname: "{{ item.name }}"

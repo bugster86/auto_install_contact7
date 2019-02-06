@@ -59,8 +59,8 @@
    name: "{{ item.name }}"
    hostname: "{{ vcenter_host }}"
    validate_certs: false
-   disk: "{{ item.dischi_aggiuntivi }}"
-  when: item.dischi_aggiuntivi is defined
+   disk: "{{ item.dischi_custom }}"
+  when: item.dischi_custom is defined
 
 
 
