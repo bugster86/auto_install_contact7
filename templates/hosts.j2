@@ -2,7 +2,7 @@
 ####################################################################################
 #                 SISTEMA CONTACT
 ####################################################################################
-{% for item in {{ configurazione | json_query('servers') }} %}
+{% for item in configurazione | json_query('servers') %}
 {% if item.name is search ("-cti*|-ipt*|-msa*|-stc*") %}
 {{ item.ip }}   {{ item.name }}.{{ configurazione | json_query('domain') }}   {{ item.name }} 
 {% fi %}
@@ -10,7 +10,7 @@
 ####################################################################################
 #                 APPLICATIVI EASYCIM
 ####################################################################################
-{% for item in {{ configurazione | json_query('servers') }} %}
+{% for item in configurazione | json_query('servers') %}
 {% if item.name is search ("-ecas*") %}
 {{ item.ip }}   {{ item.name }}.{{ configurazione | json_query('domain') }}   {{ item.name }} 
 {% fi %}
@@ -18,7 +18,7 @@
 ####################################################################################
 #                 BALANCER
 ####################################################################################
-{% for item in {{ configurazione | json_query('servers') }} %}
+{% for item in configurazione | json_query('servers') %}
 {% if item.name is search ("-bal*") %}
 {{ item.ip }}   {{ item.name }}.{{ configurazione | json_query('domain') }}   {{ item.name }} 
 {% fi %}
@@ -26,7 +26,7 @@
 ####################################################################################
 #                 DATABASE
 ####################################################################################
-{% for item in {{ configurazione | json_query('servers') }} %}
+{% for item in configurazione | json_query('servers') %}
 {% if item.name is search ("-ecdb*") %}
 {{ item.ip }}   {{ item.name }}.{{ configurazione | json_query('domain') }}   {{ item.name }} 
 {% fi %}
@@ -34,7 +34,7 @@
 ####################################################################################
 #                 CUSTOM SERVER
 ####################################################################################
-{% for item in {{ configurazione | json_query('servers') }} %}
+{% for item in configurazione | json_query('servers') %}
 {% if item.name is search ("-as*") %}
 {{ item.ip }}   {{ item.name }}.{{ configurazione | json_query('domain') }}   {{ item.name }} 
 {% fi %}
