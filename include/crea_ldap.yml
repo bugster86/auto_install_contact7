@@ -3,7 +3,7 @@
   check_mode: false
   
 - name: Modifico il dominio nei file di configurazione LDAP
-  shell: "sed -i -e \"s/=quality/={{ configurazione.domain.split(\".\")[0] }}/g\" \"s/=ass/={{ configurazione.domain.split(\".\")[1] }}/g\" /etc/openldap/acl.conf /etc/openldap/slapd.conf"
+  shell: sed -i -e "s/=quality/={{ configurazione.domain.split(\".\")[0] }}/g" "s/=ass/={{ configurazione.domain.split(\".\")[1] }}/g" /etc/openldap/acl.conf /etc/openldap/slapd.conf"
   check_mode: false
   
 - name: Posiziona il file slapd.conf (PROVIDER)

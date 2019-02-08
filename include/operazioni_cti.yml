@@ -42,7 +42,8 @@
         owner: opensips
         group: opensips
   - name: Avvio il servizio OPENSIPS
-    service: name=opensips state=started enabled=true 
+    service: name=opensips state=started enabled=true
+    failed_when: false
   when:  "'cti1' in inventory_hostname"
 
 - include_tasks: crea_ldap.yml
