@@ -23,3 +23,20 @@
     group: root
     mode: 0644
   when: 'cti1' not in inventory_hostname
+  
+- name: Valorizza il file ldif con il contenuto di LDAP
+  template:
+     owner: root
+     group: root
+     mode: 0777
+     dest: /tmp/contenuto_ldap.ldif
+     src: ../templates/contenuto_ldap.j2
+     
+- name: Carico il file LDIF
+  shell: slapadd -f /etc/openldap/slapd.conf -l /tmp/contenuto_ldap.ldif
+  
+- name: start del servizio slapd 
+  service: name=slapd state=started enabled=true
+  
+# per ora teniamo questo file per motivi di debug  
+# - file: dest=/tmp/contenuto_ldap.ldif state=absent
