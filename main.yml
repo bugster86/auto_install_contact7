@@ -141,54 +141,20 @@
     
   - include_tasks: include/costruisci_hosts.yml
   
-- name: Operazioni comuni ai server cti
-  hosts: "{{ configurazione.servers[0].name.split('-')[0] }}-cti*"
-  gather_facts: true
-  
-  tasks:
-  - include_tasks:  include/operazioni_cti.yml
-  
-- name: Operazioni comuni ai server ipt
-  hosts: "{{ configurazione.servers[0].name.split('-')[0] }}-ipt*"
-  gather_facts: true
-  
-  tasks:
+  - include_tasks: include/operazioni_cti.yml
+    when: "'-cti' in inventory_hostname"
   - include_tasks: include/operazioni_ipt.yml
-  
-- name: Operazioni comuni ai server msa
-  hosts: "{{ configurazione.servers[0].name.split('-')[0] }}-msa*"
-  gather_facts: true
-  
-  tasks:
+    when: "'-ipt' in inventory_hostname"
   - include_tasks: include/operazioni_msa.yml
-  
-- name: Operazioni comuni ai server stc
-  hosts: "{{ configurazione.servers[0].name.split('-')[0] }}-stc*"
-  gather_facts: true  
-  
-  tasks:
+    when: "'-msa' in inventory_hostname"
   - include_tasks: include/operazioni_stc.yml
-  
-- name: Operazioni comuni ai server ecas
-  hosts: "{{ configurazione.servers[0].name.split('-')[0] }}-ecas*"
-  gather_facts: true  
-  
-  tasks:
-  - include_tasks: include/operazioni_ecas.yml  
-  
-- name: Operazioni comuni ai server ecdb
-  hosts: "{{ configurazione.servers[0].name.split('-')[0] }}-ecdb*"
-  gather_facts: true  
-  
-  tasks:
-  - include_tasks: include/operazioni_ecdb.yml  
-  
-- name: Riavvio finale dei server
-  hosts: newinstall
-  gather_facts: true
-  
-  tasks:
+    when: "'-stc' in inventory_hostname" 
+  - include_tasks: include/operazioni_ecas.yml
+    when: "'-ecas' in inventory_hostname"
+  - include_tasks: include/operazioni_ecdb.yml
+    when: "'-ecdb' in inventory_hostname" 
   - reboot:
+
   
     
 
