@@ -9,4 +9,9 @@
 
 - name: rimuovo opensips sui server dove non deve essere presente  
   shell: rpm -e $(rpm -qa | grep ^opensips-) ; rm -fr /etc/opensips
-  when: 'cti1' not in inventory_hostname
+
+- name: Rimuovo anche lo user opensips
+  user:
+      name: opensips
+      state: absent
+      remove: true
