@@ -6,11 +6,3 @@
   shell: find /etc/openldap/* -delete
   check_mode: false
 
-- name: rimuovo opensips sui server dove non deve essere presente  
-  shell: rpm -e $(rpm -qa | grep ^opensips-) ; rm -fr /etc/opensips
-
-- name: Rimuovo anche lo user opensips
-  user:
-      name: opensips
-      state: absent
-      remove: true
