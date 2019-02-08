@@ -57,7 +57,7 @@ loadmodule "event_route.so"
 loadmodule "cachedb_redis.so"
 modparam("tm", "fr_timeout", 10)
 modparam("dispatcher", "db_url","text:///usr/share/opensips/dbtext/opensips")
-modparam("usrloc", "db_url","mysql://easycim:3a$yc1m_{{ inventory_hostname.split(\"-\")[0] }}@db-tnt:3306/opensips")
+modparam("usrloc", "db_url","mysql://easycim:3a$yc1m_{{ inventory_hostname.split("-")[0] }}@db-tnt:3306/opensips")
 modparam("dispatcher", "dst_avp", "$avp(271)")
 modparam("dispatcher", "grp_avp", "$avp(272)")
 modparam("dispatcher", "cnt_avp", "$avp(273)")
@@ -71,12 +71,12 @@ modparam("registrar", "default_q", 1000)
 modparam("usrloc", "use_domain", 0)
 modparam("usrloc", "timer_interval", 60)
 modparam("usrloc", "db_mode", 2)
-modparam("uac_registrant", "db_url", "mysql://easycim:3a$yc1m_{{ inventory_hostname.split(\"-\")[0] }}@db-tnt:3306/opensips")
+modparam("uac_registrant", "db_url", "mysql://easycim:3a$yc1m_{{ inventory_hostname.split("-")[0] }}@db-tnt:3306/opensips")
 modparam("topology_hiding", "force_dialog", 1)
 modparam("uac_auth","auth_realm_avp","$avp(realm)")
 modparam("uac_auth","auth_username_avp","$avp(user)")
 modparam("uac_auth","auth_password_avp","$avp(pwd)")
-modparam("dialog", "db_url", "mysql://easycim:3a$yc1m_{{ inventory_hostname.split(\"-\")[0] }}@db-tnt:3306/opensips")
+modparam("dialog", "db_url", "mysql://easycim:3a$yc1m_{{ inventory_hostname.split("-")[0] }}@db-tnt:3306/opensips")
 modparam("dialog", "db_mode", 0)
 modparam("rest_client", "curl_timeout", 1)    #Bug 5947
 modparam("rest_client", "connect_poll_interval", 5)
@@ -86,7 +86,7 @@ modparam("tm", "onreply_avp_mode", 1)
 modparam("db_text", "db_mode", 0)
 modparam("tm", "disable_6xx_block", 1)
 
-modparam("rtpproxy", "rtpproxy_sock","udp:{{ inventory_hostname.split(\"-\")[0] }}-stc1:9000 udp:{{ inventory_hostname.split(\"-\")[0] }}-stc1:9002")
+modparam("rtpproxy", "rtpproxy_sock","udp:{{ inventory_hostname.split("-")[0] }}-stc1:9000 udp:{{ inventory_hostname.split("-")[0] }}-stc1:9002")
 modparam("rtpproxy", "nortpproxy_str", "")
 
 modparam("cachedb_memcached", "cachedb_url","memcached:g1://memcached-host:11211/")
@@ -190,7 +190,7 @@ route
 		if ($var(rtpproxy) == "YES" ) {
 			$avp(startTS_S) = $Ts;
 			$avp(startTS_SM) = $Tsm;
-			async(rest_get("http://{{ inventory_hostname.split(\"-\")[0] }}-stc1/stereo_recording/stereo_recording.php?mode=end&callid=$ci", "$var(body)",,  "$var(rcode)"),"1"); #go to route[1]
+			async(rest_get("http://{{ inventory_hostname.split("-")[0] }}-stc1/stereo_recording/stereo_recording.php?mode=end&callid=$ci", "$var(body)",,  "$var(rcode)"),"1"); #go to route[1]
 		}
 	}
 
