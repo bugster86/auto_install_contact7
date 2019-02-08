@@ -24,7 +24,7 @@
   changed_when: false
   
 
-- block
+- block:
   - name: rimuovo opensips sui server dove non deve essere presente  
     shell: rpm -e $(rpm -qa | grep ^opensips-) ; rm -fr /etc/opensips
     failed_when: false  
