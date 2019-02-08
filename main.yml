@@ -142,42 +142,42 @@
   - include_tasks: include/costruisci_hosts.yml
   
 - name: Operazioni comuni ai server cti
-  hosts: "*-cti*"
+  hosts: "{{ configurazione.servers[0].name.split('-')[0] }}-cti*"
   gather_facts: true
   
   tasks:
   - include_tasks:  include/operazioni_cti.yml
   
 - name: Operazioni comuni ai server ipt
-  hosts: "*-ipt*"
+  hosts: "{{ configurazione.servers[0].name.split('-')[0] }}-ipt*"
   gather_facts: true
   
   tasks:
   - include_tasks: include/operazioni_ipt.yml
   
 - name: Operazioni comuni ai server msa
-  hosts: "*-msa*"
+  hosts: "{{ configurazione.servers[0].name.split('-')[0] }}-msa*"
   gather_facts: true
   
   tasks:
   - include_tasks: include/operazioni_msa.yml
   
 - name: Operazioni comuni ai server stc
-  hosts: "*-stc*"
+  hosts: "{{ configurazione.servers[0].name.split('-')[0] }}-stc*"
   gather_facts: true  
   
   tasks:
   - include_tasks: include/operazioni_stc.yml
   
 - name: Operazioni comuni ai server ecas
-  hosts: "*-ecas*"
+  hosts: "{{ configurazione.servers[0].name.split('-')[0] }}-ecas*"
   gather_facts: true  
   
   tasks:
   - include_tasks: include/operazioni_ecas.yml  
   
 - name: Operazioni comuni ai server ecdb
-  hosts: "*-ecdb*"
+  hosts: "{{ configurazione.servers[0].name.split('-')[0] }}-ecdb*"
   gather_facts: true  
   
   tasks:
