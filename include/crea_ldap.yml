@@ -1,5 +1,5 @@
 - name: cancello tutto il contenuto di LDAP
-  shell: fine /var/lib/ldap/ -type f ! -name DB_CONFIG -delete
+  shell: find /var/lib/ldap/ -type f ! -name DB_CONFIG -delete
   check_mode: false
   
 - name: Modifico il dominio nei file di configurazione LDAP

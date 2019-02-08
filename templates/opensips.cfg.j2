@@ -1,0 +1,1064 @@
+log_level=2				# debug level (cmd line: -dddddddddd)
+log_stderror=no		# (cmd line: -E)
+log_facility=LOG_LOCAL2
+
+
+check_via=no		# (cmd. line: -v)
+dns=no				# (cmd. line: -r)
+rev_dns=no			# (cmd. line: -R)
+children=1
+listen=udp:{{ inventory_hostname }}:5060
+listen=tcp:{{ inventory_hostname }}:5060
+wdir="/home/reicom/"
+
+
+#Alias da utilizzare se il server si trova su cluster CLOUDANDO
+alias=217.22.226.254
+#Alias da utilizzare se il server si trova su cluster REITEK
+#alias=83.103.82.94
+
+user_agent_header="User-Agent: SIPProxy Reitek SpA"
+
+# ------------------ module loading ----------------------------------
+
+mpath="/usr/lib64/opensips/modules"
+# Uncomment this if you want to use SQL database
+#loadmodule "/usr/local/lib/openser/modules/mysql.so"
+
+loadmodule "sl.so"
+loadmodule "tm.so"
+loadmodule "rr.so"
+loadmodule "maxfwd.so"
+loadmodule "usrloc.so"
+loadmodule "registrar.so"
+loadmodule "textops.so"
+loadmodule "uri.so"
+loadmodule "options.so"
+loadmodule "avpops.so"
+loadmodule "dispatcher.so"
+loadmodule "signaling.so"
+loadmodule "mi_fifo.so"
+loadmodule "db_text.so"
+loadmodule "sipmsgops.so"
+loadmodule "topology_hiding.so"
+loadmodule "rest_client.so"
+loadmodule "json.so"
+loadmodule "proto_udp.so"
+loadmodule "proto_tcp.so"
+loadmodule "db_mysql.so"
+loadmodule "dialog.so"
+loadmodule "rtpproxy.so"
+loadmodule "uac_registrant.so"
+loadmodule "uac_auth.so"
+loadmodule "uac.so"
+loadmodule "cachedb_memcached.so"
+loadmodule "event_route.so"
+
+loadmodule "cachedb_redis.so"
+modparam("tm", "fr_timeout", 10)
+modparam("dispatcher", "db_url","text:///usr/share/opensips/dbtext/opensips")
+modparam("usrloc", "db_url","mysql://easycim:3a$yc1m_{{ inventory_hostname.split(\"-\")[0] }}@db-tnt:3306/opensips")
+modparam("dispatcher", "dst_avp", "$avp(271)")
+modparam("dispatcher", "grp_avp", "$avp(272)")
+modparam("dispatcher", "cnt_avp", "$avp(273)")
+modparam("dispatcher", "ds_ping_interval", 30)
+modparam("dispatcher", "ds_probing_threshhold", 0)
+modparam("dispatcher", "ds_ping_from", "sip:reitek@reitek.com")
+modparam("dispatcher", "ds_ping_method", "OPTIONS")
+modparam("mi_fifo",  "fifo_name", "/var/run/opensips/opensips_fifo")
+modparam("registrar", "case_sensitive", 0)
+modparam("registrar", "default_q", 1000)
+modparam("usrloc", "use_domain", 0)
+modparam("usrloc", "timer_interval", 60)
+modparam("usrloc", "db_mode", 2)
+modparam("uac_registrant", "db_url", "mysql://easycim:3a$yc1m_{{ inventory_hostname.split(\"-\")[0] }}@db-tnt:3306/opensips")
+modparam("topology_hiding", "force_dialog", 1)
+modparam("uac_auth","auth_realm_avp","$avp(realm)")
+modparam("uac_auth","auth_username_avp","$avp(user)")
+modparam("uac_auth","auth_password_avp","$avp(pwd)")
+modparam("dialog", "db_url", "mysql://easycim:3a$yc1m_{{ inventory_hostname.split(\"-\")[0] }}@db-tnt:3306/opensips")
+modparam("dialog", "db_mode", 0)
+modparam("rest_client", "curl_timeout", 1)    #Bug 5947
+modparam("rest_client", "connect_poll_interval", 5)
+modparam("tm", "onreply_avp_mode", 1)
+
+
+modparam("db_text", "db_mode", 0)
+modparam("tm", "disable_6xx_block", 1)
+
+modparam("rtpproxy", "rtpproxy_sock","udp:{{ inventory_hostname.split(\"-\")[0] }}-stc1:9000 udp:{{ inventory_hostname.split(\"-\")[0] }}-stc1:9002")
+modparam("rtpproxy", "nortpproxy_str", "")
+
+modparam("cachedb_memcached", "cachedb_url","memcached:g1://memcached-host:11211/")
+
+modparam("cachedb_redis", "cachedb_url","redis:g1://redis-host:6379/")
+# -------------------------  request routing logic -------------------
+
+
+startup_route 
+{
+	xlog("L_NOTICE", "startup_route - $time(%T).$Tsm");
+	$json(sipsbcproxy) := "{}";
+	$var(rec_lifetime) = 14400; # Recorder variable lifetime in seconds 
+}
+# main routing logic
+
+route
+{
+	$var(callrouter)="http://localhost:8600/CallRouter";
+	xlog("L_INFO","------------------------------------------------------------");
+	xlog("L_DBG","Init route - $Tf");
+	xlog("L_NOTICE", "$time(%T).$Tsm - $rm $ru - From:$fu - To:$tu - call-id $ci - CSeq: $cs received from [$si:$sp] - size: $ml");
+	xlog("L_INFO", "Message: $mb");
+	
+	# initial sanity checks -- messages with
+	# max_forwards==0, or excessively long requests
+	
+	if (!mf_process_maxfwd_header("10")) 
+	{
+		sl_send_reply("483","Too Many Hops");
+		xlog("L_WARN", "Message: $mb\n has too many Hops - answered 483");
+		exit;
+	};
+	
+	xlog("L_DBG","Check msg len");
+	
+	if (msg:len >=  2048 ) 
+	{
+		sl_send_reply("513", "Message too big");
+		xlog("L_WARN", "Message: $mb\nMessage too big - answered 513");
+		exit;
+	};
+	
+	# uncomment the following lines to record-route
+	# we record-route all messages -- to make sure that
+	# subsequent messages will go through our proxy; that's
+	# particularly good if upstream and downstream entities
+	# use different transport protocol
+	
+	xlog("L_DBG","if not register record route");
+	if (!method=="REGISTER")
+	{
+		record_route();
+	}
+	
+	if (method=="SUBSCRIBE")
+	{
+		sl_send_reply("405", "Method not allowed");
+		exit;
+	}
+
+	if (has_totag() && uri != myself) {
+		xlog("L_INFO", "Message not for me");
+	} else if (has_totag() && topology_hiding_match()) {
+		xlog("L_INFO","topology_hiding_match $ci\n");
+		if (method == "ACK" && match_dialog() ) {
+
+			xlog("L_DBG","ACK  - fromUser $dlg_val(fromUser) and $dlg_val(toUser)");
+			if ( $dlg_val(fromUser) ) { 
+				subst('/^From: <sip:(\w+)@(.*)$/From: <sip:$dlg_val(fromUser)@\2/ig');
+			}
+			if ( $dlg_val(toUser) ) {
+				subst('/^To: <sip:(\w+)@(.*)$/To: <sip:$dlg_val(toUser)@\2/ig');
+			}
+			 if (has_body()) {
+                                xlog("L_INFO","trying to call rtpproxy_answer\n");
+                                rtpproxy_answer();
+                        }
+
+		}
+		
+		route(1);
+	}
+
+
+	if ( method == "OPTIONS" && !has_totag() && uri != myself)
+	{
+		xlog("L_DBG","URI not for me and OPTIONS out of dialog");
+		loose_route();
+		
+		if (uri=~"rtpproxy=") {
+			$var(key)=$si + ":" + $sp;
+			$json(sipsbcproxy/$var(key)) =  $(ru{uri.param,rtpproxy});
+			xlog("L_INFO","sipsbcproxy is: $json(sipsbcproxy)");
+		}
+		route(1);
+	}
+
+	if (method=="BYE" && match_dialog()){
+		fetch_dlg_value("rtpproxy","$var(rtpproxy)");
+		if ($var(rtpproxy) == "YES" ) {
+			$avp(startTS_S) = $Ts;
+			$avp(startTS_SM) = $Tsm;
+			async(rest_get("http://{{ inventory_hostname.split(\"-\")[0] }}-stc1/stereo_recording/stereo_recording.php?mode=end&callid=$ci", "$var(body)",,  "$var(rcode)"),"1"); #go to route[1]
+		}
+	}
+
+	# subsequent messages withing a dialog should take the
+	# path determined by record-routing
+	if ( !is_present_hf("X-RTPProxy") &&  loose_route()) 
+	{
+		xlog("L_INFO","loose route - send and exit - callid $ci");
+
+
+		if (method=="INVITE" && !has_totag() && is_present_hf("X-RTPProxy") && is_present_hf("X-2X-CallUUID")) {
+			xlog("L_INFO","Call needs to be rtpproxy(ed) - CallUUID is $hdr(X-2X-CallUUID)");
+			route(rtpproxy_passiverec);
+		}
+		
+		if (method=="OPTIONS" && uri=~"rtpproxy=") {
+			xlog("L_DBG","RTPPROXY: $(ru{uri.param,rtpproxy})");
+			$var(key)=$si + ":" + $sp;
+			$json(sipsbcproxy/$var(key)) = $(ru{uri.param,rtpproxy});
+			xlog("L_INFO","sipsbcproxy is: $json(sipsbcproxy)");
+		}
+
+		route(1);
+		exit;
+	}
+	
+	if (t_check_trans())
+	{
+		if ( is_method("CANCEL") || is_method("ACK"))
+		{
+			# CANCEL with matching INVITE transaction, just t_relay
+			xlog("L_INFO","$rm with matching transaction ... t_relay.");
+		}
+		else
+		{
+			xlog("L_WARN","$rm retransmission, forward message!!!");
+		}
+		route(1);
+		exit;
+	
+	}
+	
+	if ( is_method("CANCEL")) 
+	{
+		# CANCEL without matching INVITE transaction, ignore
+		# may happen if  the INVITE is slower than the CANCEL
+		#  ignore the CANCEL, as the client will retransmit it,  and maybe
+		# the INVITE transaction is already created
+		xlog("L_WARN","CANCEL without matching transaction ... ignore and discard.\n$mb\n");
+		exit;
+	}
+	
+	
+	
+	if (is_method("ACK"))
+	{
+		xlog("L_WARN","ACK received in wrong state");
+		if ( t_check_trans() )
+		{
+			xlog("L_WARNING","Transaction found - relay message");
+			route(1);
+		}
+		else
+		{
+			sl_reply_error();
+			xlog("L_ERR","ERROR - Transaction not found exit");
+		}
+		exit;
+	}
+	
+	if (!uri==myself) 
+	{
+		# mark routing logic in request
+		xlog("L_DEBUG", "uri != myself");
+		if(uri=~"tel:.*")
+		{
+			#Check if registered
+			route(2);
+			#Check X2X Routing table
+			route(6);
+		}
+		else
+		{
+			xlog("L_INFO", "Proxy msg to the real destination <$rd:$rp>");
+			if ( search("P-Hint: Reitek outbound\r\n") && !topology_hiding_match()) {
+				xlog("L_INFO","Apply topology hiding");
+				topology_hiding("U");
+			}
+
+			#test rtpproxy for passive rercorder
+			$var(key)=$rd + ":" +  $rp;
+			xlog("L_INFO", "Request domain is: $var(key) and sipsbc are: $json(sipsbcproxy)");
+			if (is_method("INVITE") && !has_totag() && (($hdr(X-RTPProxy) == "yes" && $ua=~"SIPSBC") || ($json(sipsbcproxy/$var(key)) == "yes" )) ) {
+				route(rtpproxy_passiverec);
+			}
+
+
+			route(1);
+		}
+		exit;
+	}
+	
+	# if the request is for other domain use UsrLoc
+	# (in case, it does not work, use the following command
+	# with proper names and addresses in it)
+	if (uri==myself) 
+	{
+		xlog("L_DEBUG","uri == myself");
+		
+		if (method == "INVITE" && (search("User-Agent: Reitek SIPSBCGW Provider") || search ("User-Agent: SIPProxy Reitek SpA")) ) {
+			xlog("L_INFO","$time(%T).$Tsm - Reitek SIPSBCGW Provider - Call outboundrouter");
+			$avp(startTS_S) = $Ts;
+			$avp(startTS_SM) = $Tsm;
+			async(rest_get("http://localhost/outboundrouter/outbound_router.php?from=$fu&to=$tu", "$var(body)",,  "$var(rcode)"),resumeOutboundRouteCB);
+		}
+
+		if ( method == "INVITE" && uri=~"^sip:(b2b|sipsbc)")
+		{
+			route(2);
+		}		
+		
+		# Message coming from SIPSBC
+
+		if ( from_uri=~"sip:8.*" && search("User-Agent: SIPSBC"))
+		{
+			xlog("L_INFO", "Message coming from SIPSBC for B2BUAEP");
+			route(LookupPattern);
+			exit;
+		}
+		
+		#Check VENDORS
+		route(9);
+
+		# Being here means that the message was not coming from one of the VENDORS
+
+		if (method=="REGISTER") 
+		{
+			# Uncomment this if you want to use digest authentication
+			#if (!www_authorize("openser.org", "subscriber")) {
+			#	www_challenge("openser.org", "0");
+			#	exit;
+			#};
+			xlog("L_INFO","save location $ct");
+			if (is_present_hf("X-EPRANGE"))
+			{
+				route(SavePattern);
+			}
+			route(save);	
+			exit;
+		}
+		
+		if (is_method("SUBSCRIBE"))
+		{
+			xlog("L_WARN","SUBSCRIBE - Method not allowed (from $fu - to $tu))");
+			sl_send_reply("405", "Method not allowed");
+			exit;
+		}
+		
+		if ( is_method("OPTIONS") )
+		{
+			if (! uri=~"sip:.*[@]+.*")
+			{
+				xlog("L_INFO","OPTIONS sent directly to opensips - keep-alive. Send 200 OK");
+				options_reply();
+				exit;
+			}
+			else
+			{
+				xlog("L_INFO","OPTIONS sent here - forward it!!");
+				route(2);
+			}
+		}
+
+		if (method==INVITE )
+		{
+			xlog("L_INFO","INVITE received");
+			#Chek if ruri is registered
+			route(2);
+			
+			
+			
+
+                      if ((! uri=~"tel:.*") && ((search("X-2X-Service:") && (!(is_present_hf("Referred-By")) || !$tU ) && !(is_present_hf("Replaces"))) || ($tu =~ "callto:")))
+			{
+				#extract the service
+				route(5);
+			}
+
+	    	if (uri=~"^(sip|tel):") 
+			{
+				#check the X2X routing table
+				route(3);
+			}
+		}
+		
+		#ERROR - impossible to route the call
+		sl_reply_error();
+		xlog("L_WARN","ERROR - Destination not found $ru");
+		exit;
+	}
+
+	route(1);
+}
+
+#forward della chiamata
+route[1] 
+{
+	xlog("L_DBG","Route 1 - Forward message");
+	if (is_method("INVITE") && uri=~"sip:OUT" ) 
+	{
+		strip(3);
+		xlog("L_INFO","Route 1 - Enable RTPPROXY for voice recording");
+		rtpproxy_engage("arocw");
+		setflag(1); # need to be recorded
+        }
+
+	loose_route();
+
+	# send it out now; use stateful forwarding as it works reliably
+	# even for UDP2TCP
+	if ($du) {
+		xlog("L_NOTICE","Route 1 - t_relay message to dest $dd:$dp");
+	} else {
+		
+		xlog("L_NOTICE","Route 1 - t_relay message to uri $rd:$rp");
+	}
+	if (!t_relay("0x08")) 
+	{
+		xlog("L_ERR", "Error forwarding message $rd:rp");
+		sl_reply_error();
+	};
+	xlog("L_DBG","Message sent");
+	exit;
+}
+
+#Controlla se il sip uri registrato
+route[2] 
+{
+	xlog("L_DBG","Route 2 - check user if registered");
+	# se trova l'alias registrato forward del messaggio, altrementi prosegue
+	/*
+	if (uri=~"(^tel:8[0-9]{3}$|sip:8[0-9]{3}@)" && from_uri=~"sip:8[0-9]{3}@")
+	{
+		sl_send_reply("403", "forbidden");
+		xlog("L_WARNING","call from $fu to $ru is forbidden");
+		exit;
+	}
+	*/
+	lookup("location","b");
+	if ($retcode >= 0) 
+	{
+		xlog("L_NOTICE","Route 2 - re-written uri [$ou] -> [$ru]");
+		route(1);
+		return(1);
+	}
+	else
+	{
+		xlog("L_INFO","Route 2 - $rU is not registered here");
+		return(2);
+	}
+}
+
+#controlla se il sip uri e' nelle routing table
+route[3] 
+{
+	xlog("L_INFO","Route 3 - Check in X2X routing table From:<$fu> To:<$tu>");
+# BEGIN BUG_6315
+$avp(blacklist_result)=0;
+cache_raw_query("redis:g1","SISMEMBER opensips:blacklist $rU","$avp(blacklist_result)");
+xlog("L_WARN","Telephone number [$rU] is $avp(blacklist_result)");
+# END BUG_6315
+	
+	if (!($fU =~ "^http2sip") && $avp(blacklist_result))
+	 {
+		xlog("L_WARN","Telephone number [$rU] is in blacklist!!! Forbidden");
+		sl_send_reply("403", "Forbidden");
+		exit;
+	}
+
+
+
+
+	$var(path)=$var(callrouter) + "/x2x_get_route";
+	xlog("L_INFO","$time(%T).$Tsm - Calling async $var(path)");
+	$var(body)=$(mb{s.substr,0,900});
+	
+	$var(reg_input)= $var(body);
+	$var(reg) = "/\+/%2B/g";
+	$avp(startTS_S) = $Ts;
+	$avp(startTS_SM) = $Tsm;
+	async(rest_post("$var(path)", "body=$(var(reg_input){re.subst,$var(reg)})&domain=$Ri:$Rp", , "$var(body)", "$var(ct)", "$var(rcode)"),resumeRouteCB);
+}
+
+route[resumeRouteCB]
+{
+	$var(lastRC)=$rc;
+	route(timeDuration);
+	$var(duration)=$rc;
+
+	xlog("L_INFO","$time(%T).$Tsm - resumeRouteCB - retcode: $var(lastRC) - $var(rcode) - duration: $var(duration)"); 
+
+	if (  $var(rcode) != 200 ) {
+
+                        xlog("L_ERR","Error code $var(lastRC):$var(rcode) in HTTP POST!");
+                        send_reply("403", "POST Forbidden");
+                        exit;
+        }
+	
+
+        xlog("L_INFO", "HTTP POST returned $var(rcode) and body $var(body)");
+        $json(response) := $var(body);
+        xlog("L_INFO", "HTTP POST result is: $json(response/result)");
+
+	if ( $json(response/result) == "false" )  
+	{
+		xlog("L_WARN","WARNING - Send 600 - No route to destination ");
+		send_reply("600",  "$json(response/description)");
+		exit;
+	}
+	$ru = $json(response/ruri);
+	if ( $json(response/routeid) =~ "^INB") {
+			strip(5);
+			prefix("sipsbc");
+			uac_replace_from("sip:$fU@cloudando.com");
+			remove_hf("Referred-By");
+			xlog("L_INFO","Enable RTPPROXY from sipprovider");
+			rtpproxy_engage("arocw");
+			append_hf("X-Direction: inbound\r\n");
+			topology_hiding("U");
+	} else {
+			if (!is_present_hf("X-2X-CallUUID") && !is_present_hf("X-REC_VUUID") && !search("User-Agent:.*VoiceXML") && !search("User-Agent: Flash2SIP"))
+			{
+					xlog("L_WARN","ERROR - Call not allowed because not having X-2X-CallUUID header. Coming from: [$si] - From uri: [$fu] - To uri: [$tu]" );
+					sl_send_reply("403", "Forbidden");
+			}
+	}
+
+	route(2);
+	if($retcode == 2)
+	{
+		xlog("L_WARN","Send 503  Service unavailable");
+		sl_send_reply("503", "Service Unavailable");
+		exit;
+	}
+	route(1);
+}
+
+route[resumeOutboundRouteCB]
+{
+	route(timeDuration);
+	$var(duration)=$rc;
+	xlog("L_INFO","$time(%T).$Tsm - resumeOutboundRouteCB - retcode: $var(lastRC) - $var(rcode) - duration: $var(duration)");
+
+	if (  $var(rcode) != 200 ) {
+
+		xlog("L_ERR","Error code $var(lastRC):$var(rcode) in HTTP POST!");
+		send_reply("403", "POST Forbidden");
+		exit;
+	}
+
+
+	xlog("L_INFO", "HTTP GET returned $var(rcode) and body $var(body)");
+	$json(response) := $var(body);
+
+	if ($json(response/result) == "false") {
+		xlog("L_WARN","Response is $json(response) - send 603 Route not found (SIPTrunk)");
+		sl_send_reply("603", "Route not found (SIPTrunk)");
+		exit;
+	}
+ 
+	$var(domain) = $json(response/domain);
+	$ru = "sip:" + $json(response/called) + "@" +  $json(response/domain);	
+
+	$var(from)= "sip:" + $json(response/calling) + "@" + $json(response/domain); 
+	$var(to)= "sip:" + $json(response/called) + "@" + $json(response/domain); 
+	uac_replace_from("$var(from)");
+	uac_replace_to("$var(to)");
+
+	subst('/^Contact: <sip:(\w+)@(.*)$/Contact: <sip:$json(response/user)@\2/ig');
+	t_on_failure("provider_auth");
+	$avp(user)=$json(response/user);
+	$avp(pwd)=$json(response/pwd);
+	#$du="sip:10.77.36.31";
+
+	xlog("L_INFO","Sending message $mb");
+	xlog("L_INFO","Enable RTPPROXY from sipprovider");
+	rtpproxy_engage("arocw");
+	topology_hiding("U");
+	store_dlg_value("fromUser","$json(response/calling)");
+	store_dlg_value("toUser","$json(response/called)");
+
+	route(1);
+}
+
+#controlla se e' una chiamata verso vxml
+route[4]
+{
+	xlog("L_INFO","ROUTE 4 - send to vxml");
+	rewriteuser("vxml_sip1"); #send to vxml
+	route(2);
+	if ($retcode==2)
+	{
+		xlog("L_WARN","Service unavailable");
+		sl_send_reply("503", "Service unavailable");
+		exit;
+	}
+}
+
+#controlla se la destinazione e' un servizio
+route[5] 
+{
+	xlog("L_INFO","ROUTE 5 - check X-2X-Service field into X2X services");
+	if (search("X-2X-Service:")) 
+	{
+		$var(path)=$var(callrouter) + "/x2x_get_service";
+        xlog("L_INFO","$time(%T).$Tsm - Calling async $var(path)");
+        $var(body)=$(mb{s.substr,0,900});
+
+        $var(reg_input)= $var(body);
+        $var(reg) = "/\+/%2B/g";
+	$avp(startTS_S) = $Ts;
+	$avp(startTS_SM) = $Tsm;
+        async(rest_post("$var(path)", "body=$(var(reg_input){re.subst,$var(reg)})&domain=$Ri:$Rp", , "$var(body)", "$var(ct)", "$var(rcode)"),resumeServiceCB);
+	}
+}
+
+route[resumeServiceCB]
+{
+        $var(lastRC)=$rc;
+	route(timeDuration);
+	$var(duration)=$rc;
+
+	xlog("L_NOTICE","resumeServiceCB retcode: $var(lastRC) - duration: $var(duration)"); 
+
+        if ( $var(rcode) != 200) {
+
+                        xlog("L_ERR","Error code $var(lastRC):$var(rcode) in HTTP POST!\n");
+                        send_reply("403", "POST Forbidden");
+                        exit;
+        }
+        xlog("L_INFO", "HTTP POST returned $var(rcode) and body $var(body)");
+        $json(response) := $var(body);
+		xlog("L_INFO", "HTTP POST result is: $json(response/result)");
+
+        if ( $json(response/result) == "false" )
+        {
+                xlog("L_WARN","Service not found for X-2X-Service $hdr(X-2X-Service) - send 404");
+                send_reply("404", "Not Found");
+                exit;
+        }
+        $ru = $json(response/ruri);
+        xlog("L_INFO", "re-written URI [$ou] -> [$ru]");
+        route(1);
+
+}
+
+
+#rotta per gestire i tel:
+route[6] 
+{
+	xlog("L_INFO","ROUTE 6 - check tel");
+	#tel: deve contenere solo numeri
+	if (uri=~"tel:(P.*;|)[0-9]+$")
+	{
+		route(3);
+	}
+	else
+	{
+		# messaggio malformato
+		xlog("L_ERR","Not valid URI - send 400 - Bad Request");
+		sl_send_reply("400","Bad Request");
+		exit;
+	}
+}
+
+
+#Check if SIPSBC extracted by route[8] is registered, otherwise cycle the list
+route[7]
+{
+	xlog("L_INFO","Route 7 - lookup for [$ru] ($rU)");
+	if (lookup("location","b","$ru"))
+	{
+		xlog("L_INFO","re-written URI [$ou] -> [$ru]");
+		$du=$ru;
+		xlog("L_INFO","Send to $(ru{uri.host}) and port $(ru{uri.port})");
+		t_on_failure("2");
+		route(1);
+		exit;
+	} 
+	else
+	{
+		xlog("L_WARN", "Impossible to register $fU because $ru not found");
+		sl_send_reply("503","Service Unavailable");
+		exit;
+	}
+	if (0) #TODO: da sistemare
+	{
+		xlog("L_INFO","Not found $ru");
+		ds_mark_dst("p");
+		ds_next_dst();
+		if ($retcode < 0)
+		{
+			xlog("L_ERR","Not found a new destination - Send 404");
+			sl_send_reply("404","Not Found");
+			exit;
+		}
+		$ru=$avp(271);
+		xlog("L_INFO","New uri is $ru");
+        	route(7);
+		exit;
+	}
+}
+
+#route the message towards a SIPSBC extracted from dispatcher list
+route[8]
+{
+	xlog("L_INFO", "Route 8 - Message from $ua - Choose SIPSBC using $var(setid) and hash alg $var(hashid)");
+
+	ds_select_dst("$var(setid)", "$var(hashid)","f");
+	xlog("L_INFO", "Selected dest $avp(271) - du is $du ");
+	$ru=$avp(271);
+	route(7);
+	exit;
+}
+
+#check VENDORS
+route[9]
+{
+	xlog("L_INFO", "Route 9 - Check VENDORS");
+
+	if ($ua=~"Reitek X2X SIP Server")
+	{
+		# X2XSIPEndpoint is not handled by B2BUAEP or SIPSBC
+		return(1);
+	}
+
+	#setid table
+	# 1 --> THOMSON
+	# 2 --> Cisco
+	# 3 --> Asterisk
+	# 4 --> AUDC
+	# 5 --> snom / Yealink / Polycom
+	# 6 --> Reitek PluginSIP
+
+	#hashid algorithm
+	# 1 --> hash over from uri
+	# 2 --> hash over to uri
+
+	#Use route[8] to work with SIPSBC
+	#USe route[10] to work without SIPSBC
+
+	if ($ua=~"B2BUAEP")
+	{
+		$var(hashid)=1;
+	}
+	else
+	{
+		$var(hashid)=2;
+	}
+
+	if ($ua=~"(B2BUAEP )?THOMSON")
+	{
+		$var(setid)=1;
+		#route(8);      #With SIPSBC
+		route(10);      #Without SIPSBC
+	}
+
+#	if ($ua=~"(B2BUAEP )?Cisco")
+#	{
+#		$var(setid)=2;
+#		route(8);       #With SIPSBC
+#		#route(10);     #Without SIPSBC
+#	}
+
+	if ($ua=~"(B2BUAEP )?Asterisk")
+	{
+		$var(setid)=3;
+		route(8);		#With SIPSBC 
+	}
+
+	if ($ua=~"(B2BUAEP )?AUDC")
+	{
+		$var(setid)=5;
+		route(8);		#With SIPSBC 
+		#route(10);		#Without SIPSBC
+	}
+
+	 if ($ua=~"(B2BUAEP )?snom")
+        {
+                $var(setid)=5;
+                route(8);              #With SIPSBC
+                #route(10);              #Without SIPSBC
+        }
+
+	if ($ua=~"(B2BUAEP )?Polycom")
+        {
+				$var(setid)=5;
+                route(8);              #With SIPSBC
+                #route(10);              #Without SIPSBC
+        }
+
+	 if ($ua=~"(B2BUAEP )?Reitek PluginSIP")
+        {
+                $var(setid)=5;
+                route(8);              	 #With SIPSBC
+                #route(10);              #Without SIPSBC
+        }
+	
+		
+}
+# Send to B2BUAEP
+route[10]
+{
+	xlog("L_INFO", "Route 10 - Message for B2BUAEP");
+	
+	route(LookupPattern);
+}
+
+route[LookupPattern]
+{
+        xlog("L_DBG","Route LookupPattern - Check for a pattern matching the user");
+	if (lookup("location",,"$fu")){
+		xlog("L_INFO","Route LookupPattern - found $ru for $fU");
+		route(1);
+	} else {
+		
+		xlog("L_INFO","Route LookupPattern - First REGISTER for $ct.fields(uri)");
+		$var(path)= $var(callrouter) + "/LookupPattern";
+	        xlog("L_INFO","$time(%T).$Tsm - Calling async $var(path)");
+		$avp(startTS_S) = $Ts;
+		$avp(startTS_SM) = $Tsm;
+	        async(rest_post("$var(path)", "body=$mb&domain=$Ri:$Rp", , "$var(body)", "$var(ct)", "$var(rcode)"),resumeLookupPattern);
+	}
+}
+
+route[resumeLookupPattern]
+{
+	$var(lastRC)=$rc;
+	route(timeDuration);
+	$var(duration)=$rc;
+
+        xlog("L_INFO","$time(%T).$Tsm - resumeLookupPattern retcode: $var(lastRC) - $var(rcode) - Duration: $var(duration)");
+
+	if ( $var(rcode) != 200 ) {
+
+		xlog("L_ERR","resumeLookupPattern: Error code $var(lastRC):$var(rcode) in HTTP POST!\n");
+		send_reply("500", "Internal server error");
+		exit;
+	}
+
+	xlog("L_INFO", "HTTP POST returned $var(rcode) and body $var(body)");
+	$json(response) := $var(body);
+	xlog("L_INFO", "HTTP POST result is: $json(response/result)");
+	if ($json(response/result) == "true"){
+		$ru = $json(response/ruri);
+		xlog("L_INFO", "re-written URI [$ou] ($oU) -> [$ru] ($rU)");
+		route(2);
+	}
+	else {
+		xlog("L_ERR", "Not found a pattern for $(ct{uri.user})");
+		# Do not send 404 because it blocks new registration requests made by pjsip-based clients
+                send_reply("503","Service Unavailable");
+	}
+}
+
+route[save]
+{
+	if (!save("location","p1"))
+        {
+		xlog("L_ERR","ERROR - Fail to save location for $ct");
+                sl_reply_error();
+        }
+
+}
+
+route[SavePattern]
+{
+        xlog("L_DBG","Route SavePattern");
+        $var(path)= $var(callrouter) +  "/SavePattern";
+        xlog("L_INFO","$time(%T).$Tsm - Route SavePattern -  Calling async $var(path)");
+	$avp(startTS_S) = $Ts;
+	$avp(startTS_SM) = $Tsm;
+        async(rest_post("$var(path)", "body=$mb&domain=$Ri:$Rp", , "$var(body)", "$var(ct)", "$var(rcode)"),resumeSavePattern);
+}
+
+route[timeDuration] 
+{
+	$var(dur) = ($Ts - $avp(startTS_S) * 1000000 + $Tsm - $avp(startTS_SM));
+	return (  $var(dur) );
+}
+route[resumeSavePattern]
+{
+	$var(lastRC)=$rc;
+	route(timeDuration);
+	$var(duration)=$rc;
+        xlog("L_INFO","$time(%T).$Tsm - resumeSavePattern - retcode:$var(lastRC) - $var(rcode) - duration: $var(duration)"); 
+
+
+        if ( $var(rcode) != 200 ) {
+
+                xlog("L_ERR","resumeSavePattern - Error code $var(lastRC):$var(rcode) in HTTP POST!\n");
+                #send_reply("500", "Internal server error");
+		route(save);
+                exit;
+        }
+
+        xlog("L_INFO", "HTTP POST returned $var(rcode) and body $var(body)");
+        $json(response) := $var(body);
+        xlog("L_DBG", "HTTP POST result is: $json(response/result)");
+        if ($json(response/result) == "true"){
+                xlog("L_DBG", "Pattern successfully saved");
+        }
+        else {
+                xlog("L_WARN", "ERROR saving pattern");
+        }
+	route(save);
+}
+
+route[rtpproxy_passiverec] {
+	xlog("L_INFO","Start rtpproxy for passive recorder");
+	rtpproxy_engage("arocw");
+	create_dialog();
+	store_dlg_value("rtpproxy","YES");
+	t_on_reply("rtpproxy");
+	if (is_present_hf("X-2X-CallUUID")) {
+		xlog("L_INFO","Set in memcached UUID: $hdr(X-2X-CallUUID) and callid $ci");
+		cache_store("memcached:g1","recorder:uuid:$ci", "$hdr(X-2X-CallUUID)",$var(rec_lifetime));
+                cache_store("memcached:g1","recorder:callid:$hdr(X-2X-CallUUID)", "$ci",$var(rec_lifetime));
+		$avp(uuid) = $hdr(X-2X-CallUUID);
+	}
+	route(1);
+}
+
+route[eprange] {
+	$var(ranges) = $hdr(X-EPRange);
+	$var(index) = 0;
+	/*
+	$var(r) = $(var(ranges){s.select,var(index),","};
+	while($(var(ranges){s.select,var(index),","})){
+	}
+	{s.select,index,separator}
+	*/
+}
+
+onreply_route 
+{
+	xlog("L_INFO","------------------------------------------------------------");
+	xlog("L_NOTICE","Received response [$si:$sp] $rs $rr $rm CSeq: $cs $ci " );
+	xlog("L_INFO","$mb" );
+	if ( is_method("INVITE") && to_uri=~"sip:835[0-9].+$" ) 
+	{
+		append_hf("Call-Info: billing\r\n");	
+	}
+}
+
+failure_route[1]
+{
+	xlog("L_ERR","Failed to relay message");
+}
+
+failure_route[2] 
+{
+    if(is_method("INVITE"))
+	{
+		xlog("L_ERR","Failed to relay message");
+		
+		ds_mark_dst("p");
+		ds_next_dst();
+		if ($retcode < 0)
+        {
+        	xlog("L_ERR","Not found a new destination - Send 404");
+            #sl_send_reply("404","Not Found");
+            exit;
+        }
+
+ 	 	$ru=$avp(271);
+        	route(7);
+		
+        exit;
+	}
+}
+
+
+failure_route[provider_auth]
+{
+	xlog("L_INFO","++++++++++++++++ provider_auth route ++++++++++++++++");
+
+
+	if (t_check_status("40[17]")) {
+		xlog("L_INFO","got challenged \n");
+		
+
+		## GET REALM from failure response
+
+		if ($(<reply>hdr(Proxy-Authenticate))) {
+			$var(raw_auth) =  $(<reply>hdr(Proxy-Authenticate));
+		}
+
+		if ($(<reply>hdr(WWW-Authenticate))) {
+			$var(raw_auth) =  $(<reply>hdr(WWW-Authenticate));
+		} 
+		
+		if ( $var(hdr) != NULL ) {
+                	$var(raw_auth) = $var(hdr);
+			xlog("L_INFO", "Proxy-Auth is present");
+		}
+                
+		$var(reg_start) = "/(.*?)realm=\"//g";
+                $var(reg_end) = "/\"(.*)//g";
+                xlog("L_INFO", "Raw data $var(raw_auth)");
+                $var(raw_auth) =  $(var(raw_auth){re.subst,$var(reg_start)});
+                $var(raw_auth) =  $(var(raw_auth){re.subst,$var(reg_end)});
+                xlog("L_INFO", "Got realm data $var(raw_auth)");
+		$avp(realm)= $var(raw_auth);
+		xlog("L_INFO","Use user:$avp(user) and pwd:[$avp(pwd)] - realm:$avp(realm)");
+
+
+     		if (uac_auth()) {
+		    xlog("L_INFO","auth was succesful");
+	            t_relay();
+		}
+	}
+}
+
+
+onreply_route[rtpproxy]
+{
+        xlog("L_INFO","------------------------------------------------------------");
+        xlog("L_NOTICE","Received response [$si:$sp] $rs $rr $rm CSeq: $cs $ci");
+        xlog("L_INFO","$mb" );
+	xlog("L_INFO", "RTPPROXY: $avp(proxy)");
+
+	if ($rs >= 180 ) {
+		if (is_present_hf("X-2X-CallUUID")) {
+			xlog("L_INFO","Set in memcached UUID: $hdr(X-2X-CallUUID) and callid $ci");
+			cache_store("memcached:g1","recorder:uuid:$ci", "$hdr(X-2X-CallUUID)",$var(rec_lifetime));
+			cache_store("memcached:g1","recorder:callid:$hdr(X-2X-CallUUID)", "$ci",$var(rec_lifetime));
+			$var(uuid) = $hdr(X-2X-CallUUID);
+		} else {	
+			$var(uuid) = $avp(uuid);
+		}  
+		
+		xlog("L_INFO","PartySwitchID: $ci;to-tag=$tt;from-tag=$ft and uuid is $avp(uuid) -  $var(uuid)");	
+		cache_store("memcached:g1","recorder:established:$var(uuid)","$ci;to-tag=$tt;from-tag=$ft",$var(rec_lifetime));
+cache_store("memcached:g1","recorder:sipkey:$var(uuid):$tU","$ci;to-tag=$tt;from-tag=$ft",$var(rec_lifetime));
+	}
+	
+}
+
+local_route {
+
+        xlog("L_INFO","------------------------------------------------------------");
+	xlog("L_NOTICE","Sending request $rm to $ru - $du - CSeq: $cs");
+	xlog("L_INFO", "local_route - Sending message: $mb");
+	if (is_method("REGISTER")) {
+		xlog("L_INFO", "Sending a REGISTER to $ru");
+		add_local_rport();
+	}
+}
+event_route[E_UL_CONTACT_DELETE]
+{
+	fetch_event_params("aor=$var(aor)");
+	xlog("L_INFO", "E_UL_CONTACT_DELETE - $var(aor)");
+}
+
+event_route[E_UL_AOR_INSERT]
+{
+	xlog("L_INFO", "E_UL_AOR_INSERT");
+	
+}
+

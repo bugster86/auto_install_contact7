@@ -22,5 +22,27 @@
   
 - shell: rm -fr /var/www/html/*
   changed_when: false
+  
+
+- block
+  - name: rimuovo opensips sui server dove non deve essere presente  
+    shell: rpm -e $(rpm -qa | grep ^opensips-) ; rm -fr /etc/opensips
+    failed_when: false  
+  when: 'cti1' not in inventory_hostname
+  
+- block:
+  - name: attivo il servizio redis
+    service: name=redis state=started enabled=true 
+    
+  - name: valorizzo il template del file di configurazione di OPENSIPS
+    template:
+        src: ..templates/opensips.cfg.j2
+        dest: /etc/opensips/opensips.cfg
+        mode: 0645
+        owner: opensips
+        group: opensips
+  - name: Avvio il servizio OPENSIPS
+    service: name=opensips state=started enabled=true 
+  when:  'cti1' in inventory_hostname
 
 - include_tasks: crea_ldap.yml

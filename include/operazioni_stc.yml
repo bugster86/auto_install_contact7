@@ -1,0 +1,12 @@
+- name: cancello tutto il contenuto di LDAP
+  shell: find /var/lib/ldap/ -type f ! -name DB_CONFIG -delete
+  check_mode: false
+
+- name: cancello tutta la configurazione di LDAP
+  shell: find /etc/openldap/* -delete
+  check_mode: false  
+  
+
+- name: rimuovo opensips sui server dove non deve essere presente  
+  shell: rpm -e $(rpm -qa | grep ^opensips-) ; rm -fr /etc/opensips
+  when: 'cti1' not in inventory_hostname
