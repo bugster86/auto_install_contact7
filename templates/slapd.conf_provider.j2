@@ -1,0 +1,109 @@
+#
+# See slapd.conf(5) for details on configuration options.
+# This file should NOT be world readable.
+#
+include         /etc/openldap/schema/core.schema
+include         /etc/openldap/schema/cosine.schema
+include         /etc/openldap/schema/inetorgperson.schema
+include         /etc/openldap/schema/reitek.schema
+
+# Define global ACLs to disable default read access.
+include         /etc/openldap/acl.conf
+
+loglevel        0
+sizelimit       10000
+
+pidfile         /var/run/openldap/slapd.pid
+argsfile        /var/run/openldap/slapd.args
+
+# load x2x overlay
+moduleload      /opt/reitek/ct6/sbin/overlay-x2x.so
+
+# Load dynamic backend modules:
+# modulepath    /usr/local/openldap/libexec/openldap
+# moduleload    back_bdb.la
+# moduleload    back_hdb.la
+# moduleload    back_ldap.la
+
+# Sample security restrictions
+#       Require integrity protection (prevent hijacking)
+#       Require 112-bit (3DES or better) encryption for updates
+#       Require 63-bit encryption for simple bind
+# security ssf=1 update_ssf=112 simple_bind=64
+
+#######################################################################
+# BDB database definitions
+#######################################################################
+
+database        bdb
+suffix          "dc={{ configurazione.domain.split(\".\")[0] }},dc={{ configurazione.domain.split(\".\")[1] }}"
+rootdn          "cn=Superuser,ou=People,ou=all,ou=x2x,dc={{ configurazione.domain.split(\".\")[0] }},dc={{ configurazione.domain.split(\".\")[1] }}"
+rootpw          {{ inventory_hostname.split(\"-\")[0] }}{{ansible_date_time.year}}
+
+# The database directory MUST exist prior to running slapd AND
+# should only be accessible by the slapd and slap tools.
+# Mode 700 recommended.
+directory       /var/lib/ldap/openldap-data
+
+# Index to maintain
+index   objectClass             eq
+index   cn                      eq,pres,sub
+
+index   ReadAccessLevel         eq,pres
+index   GroupAffiliation        eq,pres
+index   WriteAccessLevel        eq,pres
+index   UserPermission          eq,pres
+
+index   x2xDevice               eq,pres,sub
+index   x2xDomain               eq,pres,sub
+index   x2xTenant               eq,pres,sub
+
+index   ownerDevice             eq,pres,sub
+index   ownerDomain             eq,pres,sub
+
+index   scalarIdentifier        eq,pres
+
+# Syncrepl provider
+# adding index for better syncrepl performance
+index   entryCSN,entryUUID      eq
+
+# add x2x overlay
+overlay x2x
+X2XIniFile      /etc/opt/reitek/ct6/CfgNotifier.ini
+X2XPort         4010
+
+# sync provider configuration
+overlay syncprov
+syncprov-checkpoint 100 10
+syncprov-sessionlog 100
+
+# accesslog overlay for primary db
+overlay accesslog
+logdb           "cn=accesslog"
+logops          writes
+logsuccess      TRUE
+# scan everyday and purge entries older than 7 days
+logpurge        07+00:00 01+00:00
+
+# set sizelimit and timelimit to unlimited: this will help to keep slaves in sync during a large modification
+limits dn.exact="cn=Superuser,ou=People,ou=all,ou=x2x,dc={{ configurazione.domain.split(\".\")[0] }},dc={{ configurazione.domain.split(\".\")[1] }}" size=unlimited time=unlimited
+
+#######################################################################
+# Access log database
+#######################################################################
+database        bdb
+suffix          "cn=accesslog"
+rootdn          "cn=accesslog"
+directory       /var/lib/ldap/accesslog
+
+# Indices to maintain
+index   default eq
+index   entryCSN,objectClass,reqEnd,reqResult,reqStart
+
+# sync provider configuration
+overlay syncprov
+syncprov-nopresent      TRUE
+syncprov-reloadhint     TRUE
+
+# set sizelimit and timelimit to unlimited: this will help to keep slaves in sync during a large modification
+limits  dn.exact="cn=Superuser,ou=People,ou=all,ou=x2x,dc={{ configurazione.domain.split(\".\")[0] }},dc={{ configurazione.domain.split(\".\")[1] }}" size=unlimited time=unlimited

@@ -21,4 +21,6 @@
   when: inventory_hostname.find('cti1') == -1
   
 - shell: rm -fr /var/www/html/*
-  changed_when: false  
+  changed_when: false
+
+- include_tasks: crea_ldap.yml

@@ -1,0 +1,25 @@
+- name: cancello tutto il contenuto di LDAP
+  shell: fine /var/lib/ldap/ -type f ! -name DB_CONFIG -delete
+  check_mode: false
+  
+- name: Modifico il dominio nei file di configurazione LDAP
+  shell: "sed -i -e \"s/=quality/={{ configurazione.domain.split(\".\")[0] }}/g\" \"s/=ass/={{ configurazione.domain.split(\".\")[1] }}/g\" /etc/openldap/acl.conf /etc/openldap/slapd.conf"
+  check_mode: false
+  
+- name: Posiziona il file slapd.conf (PROVIDER)
+  template:
+    dest: /etc/openldap/slapd.conf
+    src: ../templates/slapd.conf_provider.j2
+    owner: root
+    group: root
+    mode: 0644
+  when: 'cti1' in inventory_hostname
+  
+- name: Posiziona il file slapd.conf (CONSUMER)
+  template:
+    dest: /etc/openldap/slapd.conf
+    src: ../templates/slapd.conf_consumer.j2
+    owner: root
+    group: root
+    mode: 0644
+  when: 'cti1' not in inventory_hostname
