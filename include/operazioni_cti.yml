@@ -36,7 +36,7 @@
     
   - name: valorizzo il template del file di configurazione di OPENSIPS
     template:
-        src: ..templates/opensips.cfg.j2
+        src: ../templates/opensips.cfg.j2
         dest: /etc/opensips/opensips.cfg
         mode: 0645
         owner: opensips
