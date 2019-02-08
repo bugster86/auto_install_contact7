@@ -13,7 +13,7 @@
     owner: root
     group: root
     mode: 0644
-  when: 'cti1' in inventory_hostname
+  when: "'cti1' in inventory_hostname"
   
 - name: Posiziona il file slapd.conf (CONSUMER)
   template:
@@ -22,7 +22,7 @@
     owner: root
     group: root
     mode: 0644
-  when: 'cti1' not in inventory_hostname
+  when: "'cti1' not in inventory_hostname"
   
 - name: Valorizza il file ldif con il contenuto di LDAP
   template:
