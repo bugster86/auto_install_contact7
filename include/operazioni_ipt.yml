@@ -16,6 +16,10 @@
   - /etc/opt/reitek/ctmonitor/configuration.xml
   - /etc/opt/reitek/nodejs/CTView.json
   - /etc/opt/reitek/vxml/VXMLUA1.xml
+  - /etc/opt/reitek/ctmonitor
+  - /etc/opt/reitek/easyviewlogin
+  - /etc/opt/reitek/msa
+  - /etc/opt/reitek/nodejs
 
 - include_tasks: crea_ldap.yml
 

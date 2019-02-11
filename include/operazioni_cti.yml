@@ -15,6 +15,12 @@
   - /etc/opt/reitek/ctmonitor/configuration.xml
   - /etc/opt/reitek/nodejs/CTView.json
   - /etc/opt/reitek/vxml/VXMLUA1.xml
+  - /etc/opt/reitek/ctmonitor
+  - /etc/opt/reitek/easyviewlogin
+  - /etc/opt/reitek/msa
+  - /etc/opt/reitek/nodejs
+  - /etc/opt/reitek/sems 
+  - /etc/opt/reitek/vxml
   
 - name: Elimino il file /etc/cron.d/opensips_checker.cron se non sono sulla cti1
   file: dest=/etc/cron.d/opensips_checker.cron state=absent
