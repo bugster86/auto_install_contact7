@@ -36,7 +36,7 @@
   shell: slapadd -f /etc/openldap/slapd.conf -l /tmp/contenuto_ldap.ldif
   
 - name: Sistemo i permessi per la cartella /var/lib/ldap  
-  file: owner=ldap group=ldap recurse=true
+  file: owner=ldap group=ldap recurse=true path=/var/lib/ldap
   
 - name: start del servizio slapd 
   service: name=slapd state=started enabled=true
