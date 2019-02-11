@@ -159,8 +159,9 @@
   - include_tasks: include/operazioni_ecas.yml
     when: "'-ecas' in inventory_hostname"
   - include_tasks: include/operazioni_ecdb.yml
-    when: "'-ecdb' in inventory_hostname" 
+    when: "'-ecdb' in inventory_hostname"   
   - reboot:
+  - shell: updatedb
 
   
     
