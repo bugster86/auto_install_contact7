@@ -36,9 +36,9 @@ moduleload      /opt/reitek/ct6/sbin/overlay-x2x.so
 #######################################################################
 
 database        bdb
-suffix          "dc={{ configurazione.domain.split(\".\")[0] }},dc={{ configurazione.domain.split(\".\")[1] }}"
-rootdn          "cn=Superuser,ou=People,ou=all,ou=x2x,dc={{ configurazione.domain.split(\".\")[0] }},dc={{ configurazione.domain.split(\".\")[1] }}"
-rootpw          {{ inventory_hostname.split(\"-\")[0] }}{{ansible_date_time.year}}
+suffix          "dc={{ configurazione.domain.split('.')[0] }},dc={{ configurazione.domain.split('.')[1] }}"
+rootdn          "cn=Superuser,ou=People,ou=all,ou=x2x,dc={{ configurazione.domain.split('.')[0] }},dc={{ configurazione.domain.split('.')[1] }}"
+rootpw          {{ inventory_hostname.split('-')[0] }}{{ansible_date_time.year}}
 
 # The database directory MUST exist prior to running slapd AND
 # should only be accessible by the slapd and slap tools.
@@ -86,7 +86,7 @@ logsuccess      TRUE
 logpurge        07+00:00 01+00:00
 
 # set sizelimit and timelimit to unlimited: this will help to keep slaves in sync during a large modification
-limits dn.exact="cn=Superuser,ou=People,ou=all,ou=x2x,dc={{ configurazione.domain.split(\".\")[0] }},dc={{ configurazione.domain.split(\".\")[1] }}" size=unlimited time=unlimited
+limits dn.exact="cn=Superuser,ou=People,ou=all,ou=x2x,dc={{ configurazione.domain.split('.')[0] }},dc={{ configurazione.domain.split('.')[1] }}" size=unlimited time=unlimited
 
 #######################################################################
 # Access log database
@@ -106,4 +106,4 @@ syncprov-nopresent      TRUE
 syncprov-reloadhint     TRUE
 
 # set sizelimit and timelimit to unlimited: this will help to keep slaves in sync during a large modification
-limits  dn.exact="cn=Superuser,ou=People,ou=all,ou=x2x,dc={{ configurazione.domain.split(\".\")[0] }},dc={{ configurazione.domain.split(\".\")[1] }}" size=unlimited time=unlimited
+limits  dn.exact="cn=Superuser,ou=People,ou=all,ou=x2x,dc={{ configurazione.domain.split('.')[0] }},dc={{ configurazione.domain.split('.')[1] }}" size=unlimited time=unlimited

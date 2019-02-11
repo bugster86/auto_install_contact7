@@ -22,9 +22,9 @@ argsfile        /var/run/openldap/slapd.args
 #######################################################################
 
 database        bdb
-suffix          "dc={{ configurazione.domain.split(\".\")[0] }},dc={{ configurazione.domain.split(\".\")[1] }}"
-rootdn          "cn=Superuser,ou=People,ou=all,ou=x2x,dc={{ configurazione.domain.split(\".\")[0] }},dc={{ configurazione.domain.split(\".\")[1] }}"
-rootpw          {{ inventory_hostname.split(\"-\")[0] }}{{ansible_date_time.year}}
+suffix          "dc={{ configurazione.domain.split('.')[0] }},dc={{ configurazione.domain.split('.')[1] }}"
+rootdn          "cn=Superuser,ou=People,ou=all,ou=x2x,dc={{ configurazione.domain.split('.')[0] }},dc={{ configurazione.domain.split('.')[1] }}"
+rootpw          {{ inventory_hostname.split('-')[0] }}{{ansible_date_time.year}}
 
 # The database directory MUST exist prior to running slapd AND
 # should only be accessible by the slapd and slap tools.
@@ -55,15 +55,15 @@ index   entryCSN,entryUUID      eq
 
 # sync consumer configuration
 syncrepl rid=1
-        provider=ldap://{{ inventory_hostname.split(\"-\")[0] }}-cti1:389
+        provider=ldap://{{ inventory_hostname.split('-')[0] }}-cti1:389
         type=refreshAndPersist
         retry="3 10 5 10 30 +"
-        searchbase="dc={{ configurazione.domain.split(\".\")[0] }},dc={{ configurazione.domain.split(\".\")[1] }}"
+        searchbase="dc={{ configurazione.domain.split('.')[0] }},dc={{ configurazione.domain.split('.')[1] }}"
         logbase="cn=accesslog"
         logfilter="(&(objectClass=auditWriteObject) (reqResult=0))"
         schemachecking=on
         bindmethod=simple
-        binddn="cn=Superuser,ou=people,ou=all,ou=x2x,dc={{ configurazione.domain.split(\".\")[0] }},dc={{ configurazione.domain.split(\".\")[1] }}"
+        binddn="cn=Superuser,ou=people,ou=all,ou=x2x,dc={{ configurazione.domain.split('.')[0] }},dc={{ configurazione.domain.split('.')[1] }}"
         credentials=saastre2016
         keepalive=60:3:10
         syncdata=accesslog
@@ -71,6 +71,6 @@ syncrepl rid=1
 # send a probe every 10 seconds after the connection remain idle for more than 60 seconds.
 # If 3 probes are lost, drop the connection
 
-updateref       ldap://{{ inventory_hostname.split(\"-\")[0] }}-cti1:389
+updateref       ldap://{{ inventory_hostname.split('-')[0] }}-cti1:389
 
 
