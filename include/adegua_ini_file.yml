@@ -1,0 +1,23 @@
+- replace:
+    dest: "{{ item }}"
+    regexp: 'quality\.ass'
+    replace: "{{ configurazione.domain.split('.')[0] }}.{{ configurazione.domain.split('.')[1] }}"
+    
+- shell: "grep EntityID {{ item }} | cut -d @ -f2"
+  changed_when: FALSE
+  register: suffix_entity
+  
+- replace:
+   dest: "{{ item }}"
+   regexp: 'EntityPassword=.*'
+   replace: "EntityPassword={{ suffix_entity.stdout }}"
+   
+- replace:
+    dest: "{{ item }}"
+    regexp: 'ConfigServers=.*'
+    replace: "ConfigServers={{ conf_ldap }}"
+    
+- replace:
+    dest: "{{ item }}"
+    regexp: '^Password='
+    replace: "Password="     

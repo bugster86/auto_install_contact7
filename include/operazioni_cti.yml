@@ -11,10 +11,10 @@
   - /etc/cron.d/msa_remove_cache_file.cron
   - /etc/cron.d/rasd_reload.cron
   - /etc/cron.d/tomcat.cron
-  - /etc/cron.d/stat_log_importer.cron
-  - /etc/cron.d/check_x2l.cron
   - /etc/cron.d/monitor_scalar.cron
-  - /etc/cron.d/stat_log_importer.cron
+  - /etc/opt/reitek/ctmonitor/configuration.xml
+  - /etc/opt/reitek/nodejs/CTView.json
+  - /etc/opt/reitek/vxml/VXMLUA1.xml
   
 - name: Elimino il file /etc/cron.d/opensips_checker.cron se non sono sulla cti1
   file: dest=/etc/cron.d/opensips_checker.cron state=absent
@@ -22,13 +22,6 @@
   
 - shell: rm -fr /var/www/html/*
   changed_when: false
-  
-
-- block:
-  - name: rimuovo opensips sui server dove non deve essere presente  
-    shell: rpm -e $(rpm -qa | grep ^opensips-) ; rm -fr /etc/opensips
-    failed_when: false  
-  when: "'cti1' not in inventory_hostname"
   
 - block:
   - name: attivo il servizio redis
@@ -47,3 +40,23 @@
   when:  "'cti1' in inventory_hostname"
 
 - include_tasks: crea_ldap.yml
+
+##### Parte di configurazione dei file.ini######################################
+- set_fact: 
+    conf_ldap: "{{ inventory_hostname }},{{ inventory_hostname.split('-')[0] }}-cti1"
+
+- set_fact:
+    conf_ldap: "{{ inventory_hostname }}"
+  when:   "'cti1' in inventory_hostname"
+
+- shell: find /etc/opt/reitek/ct6/ -name "*.ini" ! -name blacklist.ini
+    changed_when: false
+    register: fileini
+
+- include_tasks: adegua_ini_file.yml
+  with_items:
+  - "{{ fileini.stdout_lines }}"
+
+################################################################################
+
+

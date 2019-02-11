@@ -141,6 +141,13 @@
     
   - include_tasks: include/costruisci_hosts.yml
   
+  # Svuoto il file per il controllo check_sip_proc onde evitare restart che arrivino fino in pro
+  - copy: path=/etc/opt/reitek/ct6/sipproc.list content='' force=yes
+  
+  - name: Cancello i file di backup della configurazione dei mediant
+    shell: find /etc/opt/reitek/ct6/backupGateway -type f -delete
+  
+  
   - include_tasks: include/operazioni_cti.yml
     when: "'-cti' in inventory_hostname"
   - include_tasks: include/operazioni_ipt.yml

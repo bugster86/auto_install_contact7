@@ -1,1 +1,38 @@
+- name: rimuovo file di cron che non devono essere sulla cti
+  file: 
+    dest: "{{ item }}"
+    state: absent
+  with_items:
+  - /etc/cron.d/extract_audio.cron
+  - /etc/cron.d/msachk.crontab
+  - /etc/cron.d/msa.crontab
+  - /etc/cron.d/msa_remove_cache_file.cron
+  - /etc/cron.d/rasd_reload.cron
+  - /etc/cron.d/tomcat.cron
+  - /etc/cron.d/stat_log_importer.cron
+  - /etc/cron.d/check_x2l.cron
+  - /etc/cron.d/monitor_scalar.cron
+  - /etc/cron.d/stat_log_importer.cron
+  - /etc/opt/reitek/ctmonitor/configuration.xml
+  - /etc/opt/reitek/nodejs/CTView.json
+  - /etc/opt/reitek/vxml/VXMLUA1.xml
+
 - include_tasks: crea_ldap.yml
+
+##### Parte di configurazione dei file.ini######################################
+- set_fact: 
+    conf_ldap: "{{ inventory_hostname }},{{ inventory_hostname.split('-')[0] }}-cti1"
+
+- set_fact:
+    conf_ldap: "{{ inventory_hostname }}"
+  when:   "'cti1' in inventory_hostname"
+
+- shell: find /etc/opt/reitek/ct6/ -name "*.ini" ! -name blacklist.ini
+    changed_when: false
+    register: fileini
+
+- include_tasks: adegua_ini_file.yml
+  with_items:
+  - "{{ fileini.stdout_lines }}"
+
+################################################################################
