@@ -19,5 +19,5 @@
     
 - replace:
     dest: "{{ item }}"
-    regexp: '^Password='
+    regexp: '^Password=.*'
     replace: "Password="     
