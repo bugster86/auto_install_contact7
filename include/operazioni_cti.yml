@@ -24,7 +24,6 @@
   - /opt/apache-tomcat-8.0.33
   - /opt/data
   - /opt/pentaho-solutions
-  - /opt/reitek
   - /opt/apache-tomcat-8.0.33
   
 - name: Elimino il file /etc/cron.d/opensips_checker.cron se non sono sulla cti1
