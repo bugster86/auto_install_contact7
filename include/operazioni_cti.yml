@@ -60,8 +60,8 @@
   when:   "'cti1' in inventory_hostname"
 
 - shell: find /etc/opt/reitek/ct6/ -name "*.ini" ! -name blacklist.ini
-    changed_when: false
-    register: fileini
+  changed_when: false
+  register: fileini
 
 - include_tasks: adegua_ini_file.yml
   with_items:
