@@ -20,6 +20,11 @@
   - /etc/opt/reitek/easyviewlogin
   - /etc/opt/reitek/msa
   - /etc/opt/reitek/nodejs
+  - /opt/apache-tomcat-8.0.33
+  - /opt/data
+  - /opt/pentaho-solutions
+  - /opt/reitek
+  - /opt/apache-tomcat-8.0.33
 
 - include_tasks: crea_ldap.yml
 
