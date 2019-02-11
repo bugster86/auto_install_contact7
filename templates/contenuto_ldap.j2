@@ -1243,7 +1243,7 @@ autoLogonData: agent0@acd.{{ configurazione.domain.split('.')[0] }}.{{ configura
 enableAutoLogon: FALSE
 enableRecovery: TRUE
 filterExternalResources: TRUE
-userPassword:: YWNkLnF1YWxpdHkuYXNz
+userPassword: acd.{{ configurazione.domain.split('.')[0] }}.{{ configurazione.domain.split('.')[1] }}
 allowModules: TRUE
 writeAccessLevel: System
 executeAccessLevel: PhoneAgent
@@ -3633,7 +3633,7 @@ minQueueLen: 100
 queryReplyTimeLimit: 120
 onQueryErrorTimeLimit: 20
 onIncompleteReplyTimeLimit: 30
-userPassword:: ZGJlLnF1YWxpdHkuYXNz
+userPassword: dbe.{{ configurazione.domain.split('.')[0] }}.{{ configurazione.domain.split('.')[1] }}
 writeAccessLevel: System
 executeAccessLevel: System
 groupAffiliation: System
@@ -3816,7 +3816,7 @@ x2xDevice: 0
 entityAutoMonitor: FALSE
 maxNumRunning: 30
 objectClass: x2xIVRDialer
-userPassword:: aXZyZC5xdWFsaXR5LmFzcw==
+userPassword: ivrd.{{ configurazione.domain.split('.')[0] }}.{{ configurazione.domain.split('.')[1] }}
 excludeResources: ^RPOUT
 structuralObjectClass: x2xIVRDialer
 entryUUID: 169a4ae0-adc9-1034-897b-9b22ec7f8534
@@ -3928,7 +3928,7 @@ x2xTenant: all
 x2xDevice: 0
 userPermission: a52b51b5-494c-4387-a1fc-fd379156bc3d
 objectClass: x2xServiceManager
-userPassword:: c20ucXVhbGl0eS5hc3M=
+userPassword: sm.{{ configurazione.domain.split('.')[0] }}.{{ configurazione.domain.split('.')[1] }}
 executeAccessLevel: System
 writeAccessLevel: System
 readAccessLevel: a52b51b5-494c-4387-a1fc-fd379156bc3d
@@ -4060,7 +4060,7 @@ entityAutoMonitor: TRUE
 validateRequest: FALSE
 resourceAutoMonitor: FALSE
 description: CfgNotifier
-userPassword:: Y2ZnLnF1YWxpdHkuYXNz
+userPassword: cfg.{{ configurazione.domain.split('.')[0] }}.{{ configurazione.domain.split('.')[1] }}
 allowModules: FALSE
 writeAccessLevel: System
 readAccessLevel: bf97a3d4-cefb-4f8b-88d7-1014640642d9
@@ -4160,7 +4160,7 @@ modifiersName: cn=Superuser,ou=People,ou=all,ou=x2x,dc={{ configurazione.domain.
 modifyTimestamp: 20150623075624Z
 
 dn: cn=0@pddialer1.{{ configurazione.domain.split('.')[0] }}.{{ configurazione.domain.split('.')[1] }},ou=applications,ou=all,ou=x2x,dc={{ configurazione.domain.split('.')[0] }},dc={{ configurazione.domain.split('.')[1] }}
-userPassword:: cGRkaWFsZXIxLnF1YWxpdHkuYXNz
+userPassword: pddialer1.{{ configurazione.domain.split('.')[0] }}.{{ configurazione.domain.split('.')[1] }}
 sn: 0@pddialer1.{{ configurazione.domain.split('.')[0] }}.{{ configurazione.domain.split('.')[1] }}
 executeAccessLevel: System
 genericAttribute: propagateToSource=TRUE
@@ -4343,7 +4343,7 @@ modifiersName: cn=Superuser,ou=People,ou=all,ou=x2x,dc={{ configurazione.domain.
 modifyTimestamp: 20150623075624Z
 
 dn: cn=0@x2l-hubP.{{ configurazione.domain.split('.')[0] }}.{{ configurazione.domain.split('.')[1] }},ou=applications,ou=all,ou=x2x,dc={{ configurazione.domain.split('.')[0] }},dc={{ configurazione.domain.split('.')[1] }}
-userPassword:: eDJsLWh1YlAucXVhbGl0eS5hc3M=
+userPassword: x2l-hubP.{{ configurazione.domain.split('.')[0] }}.{{ configurazione.domain.split('.')[1] }}
 allowModules: FALSE
 sn: 0@x2l-hubP.{{ configurazione.domain.split('.')[0] }}.{{ configurazione.domain.split('.')[1] }}
 executeAccessLevel: PhoneAgent
@@ -4554,7 +4554,7 @@ groupAffiliation: PhoneAgent
 executeAccessLevel: System
 executeAccessLevel: PhoneAgent
 objectClass: x2xApplication
-userPassword:: aW50LWh1YjEucXVhbGl0eS5hc3M=
+userPassword: int-hub1.{{ configurazione.domain.split('.')[0] }}.{{ configurazione.domain.split('.')[1] }}
 excludeResources: .*@prerouter
 excludeResources: .*@prerouterMS.*
 excludeResources: x2l_check.*@acd.{{ configurazione.domain.split('.')[0] }}.{{ configurazione.domain.split('.')[1] }}
@@ -4706,7 +4706,7 @@ modifiersName: cn=Superuser,ou=People,ou=all,ou=x2x,dc={{ configurazione.domain.
 modifyTimestamp: 20150623075624Z
 
 dn: cn=0@statadder1.{{ configurazione.domain.split('.')[0] }}.{{ configurazione.domain.split('.')[1] }},ou=applications,ou=all,ou=x2x,dc={{ configurazione.domain.split('.')[0] }},dc={{ configurazione.domain.split('.')[1] }}
-userPassword:: c3RhdGFkZGVyMS5xdWFsaXR5LmFzcw==
+userPassword: statadder1.{{ configurazione.domain.split('.')[0] }}.{{ configurazione.domain.split('.')[1] }}
 allowModules: TRUE
 sn: 0@statadder1.{{ configurazione.domain.split('.')[0] }}.{{ configurazione.domain.split('.')[1] }}
 resourceAutoMonitor: TRUE
@@ -4898,7 +4898,7 @@ modifiersName: cn=Superuser,ou=People,ou=all,ou=x2x,dc={{ configurazione.domain.
 modifyTimestamp: 20150623075624Z
 
 dn: cn=0@prerouterMS1.{{ configurazione.domain.split('.')[0] }}.{{ configurazione.domain.split('.')[1] }},ou=applications,ou=all,ou=x2x,dc={{ configurazione.domain.split('.')[0] }},dc={{ configurazione.domain.split('.')[1] }}
-userPassword:: cHJlcm91dGVyTVMxLnF1YWxpdHkuYXNz
+userPassword: prerouterMS1.{{ configurazione.domain.split('.')[0] }}.{{ configurazione.domain.split('.')[1] }}
 allowModules: FALSE
 sn: 0@prerouterMS1.{{ configurazione.domain.split('.')[0] }}.{{ configurazione.domain.split('.')[1] }}
 resourceAutoMonitor: TRUE
@@ -5114,7 +5114,7 @@ userPermission: a875bd5c-c9ec-4532-8f6c-6668e71a66e8
 executeAccessLevel: System
 executeAccessLevel: PhoneAgent
 objectClass: x2xApplication
-userPassword:: Y2N2aWV3LWh1YjEucXVhbGl0eS5hc3M=
+userPassword: ccview-hub1.{{ configurazione.domain.split('.')[0] }}.{{ configurazione.domain.split('.')[1] }}
 excludeResources: ^[0-9].*@sep
 excludeResources: ^[0-9].*@B2BUAEP.*
 excludeResources: ^4...@B2BUA.*
@@ -5298,7 +5298,7 @@ groupAffiliation: PhoneAgent
 executeAccessLevel: System
 executeAccessLevel: PhoneAgent
 objectClass: x2xApplication
-userPassword:: eDJsY3R2aWV3LWh1YjEucXVhbGl0eS5hc3M=
+userPassword: x2lctview-hub1.{{ configurazione.domain.split('.')[0] }}.{{ configurazione.domain.split('.')[1] }}
 structuralObjectClass: x2xApplication
 entryUUID: 16c454f2-adc9-1034-89b0-9b22ec7f8534
 creatorsName: cn=Superuser,ou=People,ou=all,ou=x2x,dc={{ configurazione.domain.split('.')[0] }},dc={{ configurazione.domain.split('.')[1] }}
@@ -5443,7 +5443,7 @@ modifiersName: cn=Superuser,ou=People,ou=all,ou=x2x,dc={{ configurazione.domain.
 modifyTimestamp: 20150623075624Z
 
 dn: cn=0@stat-hubtlsA1.{{ configurazione.domain.split('.')[0] }}.{{ configurazione.domain.split('.')[1] }},ou=applications,ou=all,ou=x2x,dc={{ configurazione.domain.split('.')[0] }},dc={{ configurazione.domain.split('.')[1] }}
-userPassword:: c3RhdC1odWJ0bHNBMS5xdWFsaXR5LmFzcw==
+userPassword: stat-hubtlsA1.{{ configurazione.domain.split('.')[0] }}.{{ configurazione.domain.split('.')[1] }}
 allowModules: FALSE
 sn: 0@stat-hubtlsA1.{{ configurazione.domain.split('.')[0] }}.{{ configurazione.domain.split('.')[1] }}
 resourceAutoMonitor: TRUE
@@ -5771,7 +5771,7 @@ x2xDevice: 0
 entityAutoMonitor: TRUE
 userPermission: 47a3b3e5-aca5-40b6-9cbd-f7e2ece7a964
 objectClass: x2xApplication
-userPassword:: ZXh0LWh1YnRsc0ExLnF1YWxpdHkuYXNz
+userPassword: ext-hubtlsA1.{{ configurazione.domain.split('.')[0] }}.{{ configurazione.domain.split('.')[1] }}
 excludeResources: ^4...@B2BUA.*
 excludeResources: ^base-.*
 excludeResources: ^RPIVR
@@ -6102,7 +6102,7 @@ excludeResources: ^RPIVR
 excludeResources: ^R.*@SIPRP
 excludeResources: ^Script-.*
 objectClass: x2xApplication
-userPassword:: Y3R2aWV3LWh1YnRsc0ExLnF1YWxpdHkuYXNz
+userPassword: ctview-hubtlsA1.{{ configurazione.domain.split('.')[0] }}.{{ configurazione.domain.split('.')[1] }}
 structuralObjectClass: x2xApplication
 entryUUID: 16dae406-adc9-1034-89cc-9b22ec7f8534
 creatorsName: cn=Superuser,ou=People,ou=all,ou=x2x,dc={{ configurazione.domain.split('.')[0] }},dc={{ configurazione.domain.split('.')[1] }}
@@ -6395,7 +6395,7 @@ x2xTenant: all
 x2xDevice: 0
 entityAutoMonitor: TRUE
 objectClass: x2xApplication
-userPassword:: eDJsLWh1YnRsc0ExLnF1YWxpdHkuYXNz
+userPassword: x2l-hubtlsA1.{{ configurazione.domain.split('.')[0] }}.{{ configurazione.domain.split('.')[1] }}
 excludeResources: .*@B2BUAGW.*
 excludeResources: .*@B2BUAVXML.*
 excludeResources: ^base-.*
@@ -6675,7 +6675,7 @@ x2xTenant: all
 x2xDevice: 0
 userPermission: 781c0687-b792-4d0c-93f0-182fb4139f8e
 objectClass: x2xApplication
-userPassword:: ZXAtaHVidGxzQTEucXVhbGl0eS5hc3M=
+userPassword: ep-hubtlsA1.{{ configurazione.domain.split('.')[0] }}.{{ configurazione.domain.split('.')[1] }}
 genericAttribute: enableAutoValidation=TRUE
 structuralObjectClass: x2xApplication
 entryUUID: 16ee098c-adc9-1034-89e7-9b22ec7f8534
@@ -7611,7 +7611,7 @@ modifiersName: cn=Superuser,ou=People,ou=all,ou=x2x,dc={{ configurazione.domain.
 modifyTimestamp: 20150623075625Z
 
 dn: cn=0@stat-hubtlsB1.{{ configurazione.domain.split('.')[0] }}.{{ configurazione.domain.split('.')[1] }},ou=applications,ou=all,ou=x2x,dc={{ configurazione.domain.split('.')[0] }},dc={{ configurazione.domain.split('.')[1] }}
-userPassword:: c3RhdC1odWJ0bHNCMS5xdWFsaXR5LmFzcw==
+userPassword: stat-hubtlsB1.{{ configurazione.domain.split('.')[0] }}.{{ configurazione.domain.split('.')[1] }}
 allowModules: FALSE
 sn: 0@stat-hubtlsB1.{{ configurazione.domain.split('.')[0] }}.{{ configurazione.domain.split('.')[1] }}
 resourceAutoMonitor: TRUE
@@ -7937,7 +7937,7 @@ executeAccessLevel: tlsB
 executeAccessLevel: tlsB-Admin
 executeAccessLevel: tlsB-Supervisor
 objectClass: x2xApplication
-userPassword:: ZXh0LWh1YnRsc0IxLnF1YWxpdHkuYXNz
+userPassword: ext-hubtlsB1.{{ configurazione.domain.split('.')[0] }}.{{ configurazione.domain.split('.')[1] }}
 excludeResources: ^4...@B2BUA.*
 excludeResources: ^base-.*
 excludeResources: ^RPIVR
@@ -8251,7 +8251,7 @@ excludeResources: ^RPIVR
 excludeResources: ^R.*@SIPRP
 excludeResources: ^Script-.*
 objectClass: x2xApplication
-userPassword:: Y3R2aWV3LWh1YnRsc0IxLnF1YWxpdHkuYXNz
+userPassword: ctview-hubtlsB1.{{ configurazione.domain.split('.')[0] }}.{{ configurazione.domain.split('.')[1] }}
 structuralObjectClass: x2xApplication
 entryUUID: 17167520-adc9-1034-8a1c-9b22ec7f8534
 creatorsName: cn=Superuser,ou=People,ou=all,ou=x2x,dc={{ configurazione.domain.split('.')[0] }},dc={{ configurazione.domain.split('.')[1] }}
@@ -8511,7 +8511,7 @@ executeAccessLevel: tlsB
 executeAccessLevel: tlsB-Admin
 executeAccessLevel: tlsB-Supervisor
 objectClass: x2xApplication
-userPassword:: eDJsLWh1YnRsc0IxLnF1YWxpdHkuYXNz
+userPassword: x2l-hubtlsB1.{{ configurazione.domain.split('.')[0] }}.{{ configurazione.domain.split('.')[1] }}
 excludeResources: .*@B2BUAGW.*
 excludeResources: .*@B2BUAVXML.*
 excludeResources: ^base-.*
@@ -8753,7 +8753,7 @@ executeAccessLevel: tlsB
 executeAccessLevel: tlsB-Supervisor
 executeAccessLevel: tlsB-Admin
 objectClass: x2xApplication
-userPassword:: ZXAtaHVidGxzQjEucXVhbGl0eS5hc3M=
+userPassword: ep-hubtlsB1.{{ configurazione.domain.split('.')[0] }}.{{ configurazione.domain.split('.')[1] }}
 genericAttribute: enableAutoValidation=TRUE
 structuralObjectClass: x2xApplication
 entryUUID: 172ab8b4-adc9-1034-8a37-9b22ec7f8534
@@ -10028,7 +10028,7 @@ modifiersName: cn=superuser,ou=people,ou=all,ou=x2x,dc={{ configurazione.domain.
 modifyTimestamp: 20151125195004Z
 
 dn: cn=0@impd1.{{ configurazione.domain.split('.')[0] }}.{{ configurazione.domain.split('.')[1] }},ou=applications,ou=all,ou=x2x,dc={{ configurazione.domain.split('.')[0] }},dc={{ configurazione.domain.split('.')[1] }}
-userPassword:: aW1wZDEucXVhbGl0eS5hc3M=
+userPassword: impd1.{{ configurazione.domain.split('.')[0] }}.{{ configurazione.domain.split('.')[1] }}
 sn: 0@impd1.{{ configurazione.domain.split('.')[0] }}.{{ configurazione.domain.split('.')[1] }}
 resourceAutoMonitor: TRUE
 HTTPPort: 8100
@@ -11552,7 +11552,7 @@ objectClass: x2xDBFrontEnd
 onIncompleteReplyTimeLimit: 300
 resourceAutoMonitor: TRUE
 sn: 0@geocall.dbfe.{{ configurazione.domain.split('.')[0] }}.{{ configurazione.domain.split('.')[1] }}
-userPassword:: Z2VvY2FsbC5kYmZlLnF1YWxpdHkuYXNz
+userPassword: geocall.dbfe.{{ configurazione.domain.split('.')[0] }}.{{ configurazione.domain.split('.')[1] }}
 userPermission: 8b9d28af-4dab-4bca-8c2f-7e6593cf6487
 validateRequest: FALSE
 x2xDevice: 0
@@ -11626,7 +11626,7 @@ modifiersName: cn=Superuser,ou=People,ou=all,ou=x2x,dc={{ configurazione.domain.
 modifyTimestamp: 20150623075625Z
 
 dn: cn=0@ppl.dbfe.{{ configurazione.domain.split('.')[0] }}.{{ configurazione.domain.split('.')[1] }},ou=applications,ou=all,ou=x2x,dc={{ configurazione.domain.split('.')[0] }},dc={{ configurazione.domain.split('.')[1] }}
-userPassword:: cHBsLmRiZmUucXVhbGl0eS5hc3M=
+userPassword: ppl.dbfe.{{ configurazione.domain.split('.')[0] }}.{{ configurazione.domain.split('.')[1] }}
 sn: 0@ppl.dbfe.{{ configurazione.domain.split('.')[0] }}.{{ configurazione.domain.split('.')[1] }}
 HTTPPort: 0
 objectClass: x2xDBFrontEnd
@@ -11713,7 +11713,7 @@ modifiersName: cn=Superuser,ou=People,ou=all,ou=x2x,dc={{ configurazione.domain.
 modifyTimestamp: 20150623075625Z
 
 dn: cn=0@mmppl.dbfe.{{ configurazione.domain.split('.')[0] }}.{{ configurazione.domain.split('.')[1] }},ou=applications,ou=all,ou=x2x,dc={{ configurazione.domain.split('.')[0] }},dc={{ configurazione.domain.split('.')[1] }}
-userPassword:: bW1wcGwuZGJmZS5xdWFsaXR5LmFzcw==
+userPassword: mmppl.dbfe.{{ configurazione.domain.split('.')[0] }}.{{ configurazione.domain.split('.')[1] }}
 sn: 0@mmppl.dbfe.{{ configurazione.domain.split('.')[0] }}.{{ configurazione.domain.split('.')[1] }}
 HTTPPort: 0
 objectClass: x2xDBFrontEnd
@@ -11910,7 +11910,7 @@ modifiersName: cn=Superuser,ou=People,ou=all,ou=x2x,dc={{ configurazione.domain.
 modifyTimestamp: 20150623075625Z
 
 dn: cn=0@pusher-stats.{{ configurazione.domain.split('.')[0] }}.{{ configurazione.domain.split('.')[1] }},ou=applications,ou=all,ou=x2x,dc={{ configurazione.domain.split('.')[0] }},dc={{ configurazione.domain.split('.')[1] }}
-userPassword:: cHVzaGVyLXN0YXRzLnF1YWxpdHkuYXNz
+userPassword: pusher-stats.{{ configurazione.domain.split('.')[0] }}.{{ configurazione.domain.split('.')[1] }}
 allowModules: TRUE
 sn: 0@pusher-stats.{{ configurazione.domain.split('.')[0] }}.{{ configurazione.domain.split('.')[1] }}
 resourceAutoMonitor: TRUE
@@ -12046,7 +12046,7 @@ modifiersName: cn=Superuser,ou=People,ou=all,ou=x2x,dc={{ configurazione.domain.
 modifyTimestamp: 20150623075625Z
 
 dn: cn=0@pusher-mail.{{ configurazione.domain.split('.')[0] }}.{{ configurazione.domain.split('.')[1] }},ou=applications,ou=all,ou=x2x,dc={{ configurazione.domain.split('.')[0] }},dc={{ configurazione.domain.split('.')[1] }}
-userPassword:: cHVzaGVyLW1haWwucXVhbGl0eS5hc3M=
+userPassword: pusher-mail.{{ configurazione.domain.split('.')[0] }}.{{ configurazione.domain.split('.')[1] }}
 allowModules: TRUE
 sn: 0@pusher-mail.{{ configurazione.domain.split('.')[0] }}.{{ configurazione.domain.split('.')[1] }}
 resourceAutoMonitor: TRUE
@@ -12196,7 +12196,7 @@ x2xDevice: 0
 userPermission: 78a0365e-6274-41b1-b65d-e721820fac9b
 groupAffiliation: System
 objectClass: x2xApplication
-userPassword:: c2lwcm91dGVyLnF1YWxpdHkuYXNz
+userPassword: siprouter.{{ configurazione.domain.split('.')[0] }}.{{ configurazione.domain.split('.')[1] }}
 allowModules: FALSE
 excludeResources: ^4...@B2BUA.*
 genericAttribute: routebyservice=1
@@ -12281,7 +12281,7 @@ groupAffiliation: PhoneAgent
 executeAccessLevel: System
 executeAccessLevel: PhoneAgent
 objectClass: x2xApplication
-userPassword:: Y3RpLWh1YjEucXVhbGl0eS5hc3M=
+userPassword: cti-hub1.{{ configurazione.domain.split('.')[0] }}.{{ configurazione.domain.split('.')[1] }}
 excludeResources: ^4...@B2BUA.*
 excludeResources: ^base-.*
 excludeResources: ^Script-.*
@@ -12406,7 +12406,7 @@ modifiersName: cn=Superuser,ou=People,ou=all,ou=x2x,dc={{ configurazione.domain.
 modifyTimestamp: 20150623075625Z
 
 dn: cn=0@ipt-hub1.{{ configurazione.domain.split('.')[0] }}.{{ configurazione.domain.split('.')[1] }},ou=applications,ou=all,ou=x2x,dc={{ configurazione.domain.split('.')[0] }},dc={{ configurazione.domain.split('.')[1] }}
-userPassword:: aXB0LWh1YjEucXVhbGl0eS5hc3M=
+userPassword: ipt-hub1.{{ configurazione.domain.split('.')[0] }}.{{ configurazione.domain.split('.')[1] }}
 allowModules: FALSE
 sn: 0@ipt-hub1.{{ configurazione.domain.split('.')[0] }}.{{ configurazione.domain.split('.')[1] }}
 resourceAutoMonitor: TRUE
@@ -12731,7 +12731,7 @@ readAccessLevel: PhoneAgent
 readAccessLevel: System
 resourceAutoMonitor: TRUE
 sn: 0@out-hub1.{{ configurazione.domain.split('.')[0] }}.{{ configurazione.domain.split('.')[1] }}
-userPassword:: b3V0LWh1YjEucXVhbGl0eS5hc3M=
+userPassword: out-hub1.{{ configurazione.domain.split('.')[0] }}.{{ configurazione.domain.split('.')[1] }}
 userPermission: a8a1e3ad-7a57-44e7-9a1e-10afbcb3e99c
 validateRequest: FALSE
 writeAccessLevel: System
@@ -12890,7 +12890,7 @@ x2xTenant: all
 x2xDevice: 0
 userPermission: b39650cd-1cb9-4b3b-bee0-f8a57eb85077
 objectClass: x2xB2BUAGW
-userPassword:: QjJCVUFHVzEucXVhbGl0eS5hc3M=
+userPassword: B2BUAGW1.{{ configurazione.domain.split('.')[0] }}.{{ configurazione.domain.split('.')[1] }}
 allowModules: FALSE
 sipRegistrationTimer: 150
 sipAddressOfRecord: sip:b2buagw1@{{ inventory_hostname.split('-')[0] }}-cti1
@@ -13050,7 +13050,7 @@ modifiersName: cn=Superuser,ou=People,ou=all,ou=x2x,dc={{ configurazione.domain.
 modifyTimestamp: 20150623075626Z
 
 dn: cn=0@SIPSBCGW1.{{ configurazione.domain.split('.')[0] }}.{{ configurazione.domain.split('.')[1] }},ou=applications,ou=all,ou=x2x,dc={{ configurazione.domain.split('.')[0] }},dc={{ configurazione.domain.split('.')[1] }}
-userPassword:: U0lQU0JDR1cxLnF1YWxpdHkuYXNz
+userPassword: SIPSBCGW1.{{ configurazione.domain.split('.')[0] }}.{{ configurazione.domain.split('.')[1] }}
 sn: 0@SIPSBCGW1.{{ configurazione.domain.split('.')[0] }}.{{ configurazione.domain.split('.')[1] }}
 sipAddressOfRecord: sip:sipsbcgw1@{{ inventory_hostname.split('-')[0] }}-cti1
 canExecute: -
@@ -13389,7 +13389,7 @@ modifiersName: cn=Superuser,ou=People,ou=all,ou=x2x,dc={{ configurazione.domain.
 modifyTimestamp: 20150623075626Z
 
 dn: cn=0@SIPRPOUT1.{{ configurazione.domain.split('.')[0] }}.{{ configurazione.domain.split('.')[1] }},ou=applications,ou=all,ou=x2x,dc={{ configurazione.domain.split('.')[0] }},dc={{ configurazione.domain.split('.')[1] }}
-userPassword:: U0lQUlBPVVQxLnF1YWxpdHkuYXNz
+userPassword: SIPRPOUT1.{{ configurazione.domain.split('.')[0] }}.{{ configurazione.domain.split('.')[1] }}
 allowModules: TRUE
 sn: 0@SIPRPOUT1.{{ configurazione.domain.split('.')[0] }}.{{ configurazione.domain.split('.')[1] }}
 resourceAutoMonitor: TRUE
@@ -13599,7 +13599,7 @@ modifiersName: cn=Superuser,ou=People,ou=all,ou=x2x,dc={{ configurazione.domain.
 modifyTimestamp: 20150623075626Z
 
 dn: cn=0@SIPRPIVR1.{{ configurazione.domain.split('.')[0] }}.{{ configurazione.domain.split('.')[1] }},ou=applications,ou=all,ou=x2x,dc={{ configurazione.domain.split('.')[0] }},dc={{ configurazione.domain.split('.')[1] }}
-userPassword:: U0lQUlBJVlIxLnF1YWxpdHkuYXNz
+userPassword: SIPRPIVR1.{{ configurazione.domain.split('.')[0] }}.{{ configurazione.domain.split('.')[1] }}
 allowModules: TRUE
 sn: 0@SIPRPIVR1.{{ configurazione.domain.split('.')[0] }}.{{ configurazione.domain.split('.')[1] }}
 resourceAutoMonitor: TRUE
@@ -13794,7 +13794,7 @@ cn: 0@B2BUAVXML1.{{ configurazione.domain.split('.')[0] }}.{{ configurazione.dom
 x2xTenant: all
 x2xDevice: 0
 objectClass: x2xB2BUAVXML
-userPassword:: QjJCVUFWWE1MMS5xdWFsaXR5LmFzcw==
+userPassword: B2BUAVXML1.{{ configurazione.domain.split('.')[0] }}.{{ configurazione.domain.split('.')[1] }}
 allowModules: FALSE
 vxmlUri: sip:dialog@{{ inventory_hostname.split('-')[0] }}-ipt1:26118
 sipAddressOfRecord: sip:b2buavxml1@{{ inventory_hostname.split('-')[0] }}-cti1
@@ -13983,7 +13983,7 @@ x2xDevice: 0
 validateRequest: FALSE
 userPermission: 18365b1f-88ea-4ad2-8b7f-5ee1b914ebe0
 objectClass: x2xSIPRoutepoint
-userPassword:: U0lQUlBJTjEucXVhbGl0eS5hc3M=
+userPassword: SIPRPIN1.{{ configurazione.domain.split('.')[0] }}.{{ configurazione.domain.split('.')[1] }}
 sipRegistrationTimer: 150
 sipAddressOfRecord: sip:siprpin1@{{ inventory_hostname.split('-')[0] }}-cti1
 writeAccessLevel: System
@@ -14212,7 +14212,7 @@ x2xDevice: 0
 validateRequest: FALSE
 userPermission: 1febe78d-7a4d-42ed-a30d-49241849511a
 objectClass: x2xSIPRoutepoint
-userPassword:: U0lQUlBJTjIucXVhbGl0eS5hc3M=
+userPassword: SIPRPIN2.{{ configurazione.domain.split('.')[0] }}.{{ configurazione.domain.split('.')[1] }}
 sipRegistrationTimer: 150
 sipAddressOfRecord: sip:siprpin2@{{ inventory_hostname.split('-')[0] }}-cti1
 writeAccessLevel: System
@@ -14446,7 +14446,7 @@ groupAffiliation: System
 executeAccessLevel: System
 objectClass: x2xB2BUAGW
 HTTPPort: 8900
-userPassword:: SFRUUDJTSVAxLnF1YWxpdHkuYXNz
+userPassword: HTTP2SIP1.{{ configurazione.domain.split('.')[0] }}.{{ configurazione.domain.split('.')[1] }}
 structuralObjectClass: x2xB2BUAGW
 entryUUID: 17fd7268-adc9-1034-8b14-9b22ec7f8534
 creatorsName: cn=Superuser,ou=People,ou=all,ou=x2x,dc={{ configurazione.domain.split('.')[0] }},dc={{ configurazione.domain.split('.')[1] }}
@@ -14564,7 +14564,7 @@ modifiersName: cn=Superuser,ou=People,ou=all,ou=x2x,dc={{ configurazione.domain.
 modifyTimestamp: 20150623075626Z
 
 dn: cn=0@B2BUAF2S1.{{ configurazione.domain.split('.')[0] }}.{{ configurazione.domain.split('.')[1] }},ou=applications,ou=all,ou=x2x,dc={{ configurazione.domain.split('.')[0] }},dc={{ configurazione.domain.split('.')[1] }}
-userPassword:: QjJCVUFGMlMxLnF1YWxpdHkuYXNz
+userPassword: B2BUAF2S1.{{ configurazione.domain.split('.')[0] }}.{{ configurazione.domain.split('.')[1] }}
 sn: 0@B2BUAF2S1.{{ configurazione.domain.split('.')[0] }}.{{ configurazione.domain.split('.')[1] }}
 allowModules: FALSE
 sipAddressOfRecord: sip:b2buaf2s1@{{ inventory_hostname.split('-')[0] }}-cti1
@@ -14796,7 +14796,7 @@ x2xDevice: 0
 entityAutoMonitor: TRUE
 executeAccessLevel: System
 objectClass: x2xSIPRoutepoint
-userPassword:: U0lQUlBDSEFUMS5xdWFsaXR5LmFzcw==
+userPassword: SIPRPCHAT1.{{ configurazione.domain.split('.')[0] }}.{{ configurazione.domain.split('.')[1] }}
 structuralObjectClass: x2xSIPRoutepoint
 entryUUID: 18072466-adc9-1034-8b21-9b22ec7f8534
 creatorsName: cn=Superuser,ou=People,ou=all,ou=x2x,dc={{ configurazione.domain.split('.')[0] }},dc={{ configurazione.domain.split('.')[1] }}
@@ -15163,7 +15163,7 @@ structuralObjectClass: x2xB2BUAEP
 entryUUID: 0cb6b6f6-bb4f-1034-9418-3b0ccac72465
 creatorsName: cn=Superuser,ou=people,ou=all,ou=x2x,dc={{ configurazione.domain.split('.')[0] }},dc={{ configurazione.domain.split('.')[1] }}
 createTimestamp: 20150710125805Z
-userPassword:: QjJCVUFFUC5xdWFsaXR5LmFzcw==
+userPassword: B2BUAEP.{{ configurazione.domain.split('.')[0] }}.{{ configurazione.domain.split('.')[1] }}
 conferenceServerUri: sip:conf-tlsA1@{{ inventory_hostname.split('-')[0] }}-cti1:5080
 sipAddressOfRecord: sip:B2BUAEPtlsA1@{{ inventory_hostname.split('-')[0] }}-cti1;q=1
 writeAccessLevel: tlsA-Admin
@@ -15377,7 +15377,7 @@ structuralObjectClass: x2xB2BUAEP
 entryUUID: 3e85a8b8-bb4f-1034-942b-3b0ccac72465
 creatorsName: cn=Superuser,ou=people,ou=all,ou=x2x,dc={{ configurazione.domain.split('.')[0] }},dc={{ configurazione.domain.split('.')[1] }}
 createTimestamp: 20150710125928Z
-userPassword:: QjJCVUFFUC5xdWFsaXR5LmFzcw==
+userPassword: B2BUAEP.{{ configurazione.domain.split('.')[0] }}.{{ configurazione.domain.split('.')[1] }}
 conferenceServerUri: sip:conf-tlsB1@{{ inventory_hostname.split('-')[0] }}-cti1:5080
 sipAddressOfRecord: sip:B2BUAEPtlsB1@{{ inventory_hostname.split('-')[0] }}-cti1;q=1
 recExtraCallData: REC_
@@ -16316,7 +16316,7 @@ modifiersName: cn=superuser,ou=people,ou=all,ou=x2x,dc={{ configurazione.domain.
 modifyTimestamp: 20160517130745Z
 
 dn: cn=0@B2BUAGW2.{{ configurazione.domain.split('.')[0] }}.{{ configurazione.domain.split('.')[1] }},ou=applications,ou=all,ou=x2x,dc={{ configurazione.domain.split('.')[0] }},dc={{ configurazione.domain.split('.')[1] }}
-userPassword:: QjJCVUFHVzIucXVhbGl0eS5hc3M=
+userPassword: B2BUAGW2.{{ configurazione.domain.split('.')[0] }}.{{ configurazione.domain.split('.')[1] }}
 allowModules: FALSE
 sn: 0@B2BUAGW2.{{ configurazione.domain.split('.')[0] }}.{{ configurazione.domain.split('.')[1] }}
 sipAddressOfRecord: sip:b2buagw2@{{ inventory_hostname.split('-')[0] }}-cti1
@@ -16504,7 +16504,7 @@ structuralObjectClass: x2xSIPSBC
 entryUUID: ff07f722-c3d2-1034-9ca2-a3eb8f56d7f7
 creatorsName: cn=Superuser,ou=people,ou=all,ou=x2x,dc={{ configurazione.domain.split('.')[0] }},dc={{ configurazione.domain.split('.')[1] }}
 createTimestamp: 20150721090245Z
-userPassword:: U0lQU0JDR1cyLnF1YWxpdHkuYXNz
+userPassword: SIPSBCGW2.{{ configurazione.domain.split('.')[0] }}.{{ configurazione.domain.split('.')[1] }}
 genericAttribute: CheckSipCallStep=4
 genericAttribute: extUserAgent=Reitek SIPSBCGW
 genericAttribute: forceSDPOnINVITE=FALSE
@@ -16747,7 +16747,7 @@ structuralObjectClass: x2xSIPRoutepoint
 entryUUID: e9686b6a-c3df-1034-9cc3-a3eb8f56d7f7
 creatorsName: cn=Superuser,ou=people,ou=all,ou=x2x,dc={{ configurazione.domain.split('.')[0] }},dc={{ configurazione.domain.split('.')[1] }}
 createTimestamp: 20150721103512Z
-userPassword:: U0lQUlBPVVQyLnF1YWxpdHkuYXNz
+userPassword: SIPRPOUT2.{{ configurazione.domain.split('.')[0] }}.{{ configurazione.domain.split('.')[1] }}
 msaAddress: {{ inventory_hostname.split('-')[0] }}-msa1:8000
 excludeResources: SIPSBC
 entryCSN: 20180820101239.124324Z#000000#000#000000
@@ -19433,7 +19433,7 @@ structuralObjectClass: x2xApplication
 entryUUID: 34ae97cc-15c3-1035-8984-3760a52f9459
 creatorsName: cn=Superuser,ou=people,ou=all,ou=x2x,dc={{ configurazione.domain.split('.')[0] }},dc={{ configurazione.domain.split('.')[1] }}
 createTimestamp: 20151102153618Z
-userPassword:: WDJYSVZSQ0FMTFNUQVRTLnF1YWxpdHkuYXNz
+userPassword: X2XIVRCALLSTATS.{{ configurazione.domain.split('.')[0] }}.{{ configurazione.domain.split('.')[1] }}
 cn: 1@X2XIVRCALLSTATS.{{ configurazione.domain.split('.')[0] }}.{{ configurazione.domain.split('.')[1] }}
 includeResourceTypes: ivrline
 entryCSN: 20181128121141.380764Z#000000#000#000000
@@ -19563,7 +19563,7 @@ modifiersName: cn=Superuser,ou=people,ou=all,ou=x2x,dc={{ configurazione.domain.
 modifyTimestamp: 20151102153619Z
 
 dn: cn=0@callrouterhub1.{{ configurazione.domain.split('.')[0] }}.{{ configurazione.domain.split('.')[1] }},ou=applications,ou=all,ou=x2x,dc={{ configurazione.domain.split('.')[0] }},dc={{ configurazione.domain.split('.')[1] }}
-userPassword:: Y2FsbHJvdXRlcmh1YjEucXVhbGl0eS5hc3M=
+userPassword: callrouterhub1.{{ configurazione.domain.split('.')[0] }}.{{ configurazione.domain.split('.')[1] }}
 allowModules: TRUE
 sn: 0@callrouterhub1.{{ configurazione.domain.split('.')[0] }}.{{ configurazione.domain.split('.')[1] }}
 resourceAutoMonitor: TRUE
@@ -20151,7 +20151,7 @@ modifiersName: cn=Superuser,ou=people,ou=all,ou=x2x,dc={{ configurazione.domain.
 modifyTimestamp: 20160217101156Z
 
 dn: cn=0@SIPSBCGW3.{{ configurazione.domain.split('.')[0] }}.{{ configurazione.domain.split('.')[1] }},ou=applications,ou=all,ou=x2x,dc={{ configurazione.domain.split('.')[0] }},dc={{ configurazione.domain.split('.')[1] }}
-userPassword:: U0lQU0JDR1czLnF1YWxpdHkuYXNz
+userPassword: SIPSBCGW3.{{ configurazione.domain.split('.')[0] }}.{{ configurazione.domain.split('.')[1] }}
 sn: 0@SIPSBCGW3.{{ configurazione.domain.split('.')[0] }}.{{ configurazione.domain.split('.')[1] }}
 executeAccessLevel: System
 canExecute: -
@@ -20288,7 +20288,7 @@ modifiersName: cn=Superuser,ou=people,ou=all,ou=x2x,dc={{ configurazione.domain.
 modifyTimestamp: 20160301104542Z
 
 dn: cn=0@B2BUAGW3.{{ configurazione.domain.split('.')[0] }}.{{ configurazione.domain.split('.')[1] }},ou=applications,ou=all,ou=x2x,dc={{ configurazione.domain.split('.')[0] }},dc={{ configurazione.domain.split('.')[1] }}
-userPassword:: QjJCVUFHVzMucXVhbGl0eS5hc3M=
+userPassword: B2BUAGW3.{{ configurazione.domain.split('.')[0] }}.{{ configurazione.domain.split('.')[1] }
 allowModules: FALSE
 sn: 0@B2BUAGW3.{{ configurazione.domain.split('.')[0] }}.{{ configurazione.domain.split('.')[1] }}
 executeAccessLevel: System
@@ -20455,7 +20455,7 @@ modifiersName: cn=Superuser,ou=people,ou=all,ou=x2x,dc={{ configurazione.domain.
 modifyTimestamp: 20160301104634Z
 
 dn: cn=0@SIPRPIVR3.{{ configurazione.domain.split('.')[0] }}.{{ configurazione.domain.split('.')[1] }},ou=applications,ou=all,ou=x2x,dc={{ configurazione.domain.split('.')[0] }},dc={{ configurazione.domain.split('.')[1] }}
-userPassword:: U0lQUlBJVlIzLnF1YWxpdHkuYXNz
+userPassword: SIPRPIVR3.{{ configurazione.domain.split('.')[0] }}.{{ configurazione.domain.split('.')[1] }}
 allowModules: TRUE
 sn: 0@SIPRPIVR3.{{ configurazione.domain.split('.')[0] }}.{{ configurazione.domain.split('.')[1] }}
 sipAddressOfRecord: sip:siprpivr3@{{ inventory_hostname.split('-')[0] }}-cti1
@@ -20671,7 +20671,7 @@ modifiersName: cn=Superuser,ou=people,ou=all,ou=x2x,dc={{ configurazione.domain.
 modifyTimestamp: 20160301104736Z
 
 dn: cn=0@SIPRPOUT3.{{ configurazione.domain.split('.')[0] }}.{{ configurazione.domain.split('.')[1] }},ou=applications,ou=all,ou=x2x,dc={{ configurazione.domain.split('.')[0] }},dc={{ configurazione.domain.split('.')[1] }}
-userPassword:: U0lQUlBPVVQzLnF1YWxpdHkuYXNz
+userPassword: SIPRPOUT3.{{ configurazione.domain.split('.')[0] }}.{{ configurazione.domain.split('.')[1] }}
 allowModules: TRUE
 sn: 0@SIPRPOUT3.{{ configurazione.domain.split('.')[0] }}.{{ configurazione.domain.split('.')[1] }}
 resourceAutoMonitor: TRUE
@@ -21233,7 +21233,7 @@ entryUUID: 3d5e9ffe-a747-1036-9248-9141db0a756d
 creatorsName: cn=Superuser,ou=people,ou=all,ou=x2x,dc={{ configurazione.domain.split('.')[0] }},dc={{ configurazione.domain.split('.')[1] }}
 createTimestamp: 20170327144143Z
 sipAddressOfRecord: sip:SIPSBCEP2@{{ inventory_hostname.split('-')[0] }}-cti1
-userPassword:: U0lQU0JDRVAyLnF1YWxpdHkuYXNz
+userPassword: SIPSBCEP2.{{ configurazione.domain.split('.')[0] }}.{{ configurazione.domain.split('.')[1] }}
 genericAttribute: CheckSipCallStep=4
 genericAttribute: externalOutboundProxy=sip:{{ inventory_hostname.split('-')[0] }}-cti1
 genericAttribute: extUserAgent=SIPSBC CT6
@@ -21393,7 +21393,7 @@ entryUUID: 4ba14206-a747-1036-9257-9141db0a756d
 creatorsName: cn=Superuser,ou=people,ou=all,ou=x2x,dc={{ configurazione.domain.split('.')[0] }},dc={{ configurazione.domain.split('.')[1] }}
 createTimestamp: 20170327144207Z
 sipAddressOfRecord: sip:SIPSBCEP1@{{ inventory_hostname.split('-')[0] }}-cti1
-userPassword:: U0lQU0JDRVAxLnF1YWxpdHkuYXNz
+userPassword: SIPSBCEP1.{{ configurazione.domain.split('.')[0] }}.{{ configurazione.domain.split('.')[1] }}
 genericAttribute: CheckSipCallStep=4
 genericAttribute: externalOutboundProxy=sip:{{ inventory_hostname.split('-')[0] }}-cti1
 genericAttribute: extUserAgent=SIPSBC CT6
