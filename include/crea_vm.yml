@@ -9,7 +9,7 @@
   delegate_to: localhost
 
 - vmware_guest:
-    annotation: "[ANSIBLE]"
+    annotation: "{{  configurazione | json_query('note_vm') }}"
     cluster: "{{  configurazione | json_query('cluster') }}"
     datacenter: "{{  configurazione | json_query('datacenter') }}"
     folder: "{{  configurazione | json_query('folder') }}"

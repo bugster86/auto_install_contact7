@@ -7,6 +7,7 @@
 	"vlan": "IMG Italy 47 6100 - 355",
 	"ntp_server": "1.1.1.1",
 	"pool_vmware": "IMG Italy 47 6100",
+	"note_vm": "Server di produzione per il cliente SCALATO",
 	
 	
 	"lista_dns_mailto": ["Martino.Vigano@enghouse.com"],

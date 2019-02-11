@@ -1,6 +1,5 @@
 - name: "accendo la VM {{ item.name }}"
   vmware_guest:
-    annotation: "[ANSIBLE]"
     cluster: "{{  configurazione | json_query('cluster') }}"
     datacenter: "{{  configurazione | json_query('datacenter') }}"
     folder: "{{  configurazione | json_query('folder') }}"

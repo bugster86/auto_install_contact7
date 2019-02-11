@@ -1,6 +1,5 @@
 - name: "Modifica la VRAM per il server {{ item.name }}"
   vmware_guest:
-    annotation: "[ANSIBLE]"
     cluster: "{{  configurazione | json_query('cluster') }}"
     datacenter: "{{  configurazione | json_query('datacenter') }}"
     folder: "{{  configurazione | json_query('folder') }}"
@@ -16,7 +15,6 @@
 
 - name:  "Imposto il numero totale di vcpu per il server {{ item.name }}"
   vmware_guest:
-    annotation: "[ANSIBLE]"
     cluster: "{{  configurazione | json_query('cluster') }}"
     datacenter: "{{  configurazione | json_query('datacenter') }}"
     folder: "{{  configurazione | json_query('folder') }}"
@@ -32,7 +30,6 @@
 
 - name: "Imposto il numero di vcpu per singolo socket per il server {{ item.name }}"
   vmware_guest:
-    annotation: "[ANSIBLE]"
     cluster: "{{  configurazione | json_query('cluster') }}"
     datacenter: "{{  configurazione | json_query('datacenter') }}"
     folder: "{{  configurazione | json_query('folder') }}"
@@ -49,7 +46,6 @@
  
 - name: "Creo i virtual disk per il server {{ item.name }}"
   vmware_guest:
-   annotation: "[ANSIBLE]"
    cluster: "{{  configurazione | json_query('cluster') }}"
    datacenter: "{{  configurazione | json_query('datacenter') }}"
    folder: "{{  configurazione | json_query('folder') }}"
