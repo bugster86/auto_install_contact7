@@ -49,7 +49,17 @@
 	"cluster": "Shared Cluster",
 	"datacenter": "Shared Cluster",
 	"folder": "/vm/IMG Italy 47 6100/R&D/Quality Assurance/Test Install Scalati",
-	"subsystem": 2,
+	"subsystem": [
+		{
+			 "name": "tlsA",
+			 "istanze": 1
+		},
+		{
+			"name": "tlsB",
+			"istanze": 1
+		}
+
+	],
 	"numero_max_operatori": 200
 
 }

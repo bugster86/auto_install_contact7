@@ -17,3 +17,14 @@
     with_items:
     - "{{ configurazione | json_query('virtual_ip[*].ip') }}"
   when: configurazione.virtual_ip is defined    
+
+- name: Controllo del numero dei subsystem
+  fail:
+    msg: "I subsystems devono essere almeno 2"
+  when: configurazione|json_query('subsystem[*]')|length < 2
+
+- name: Controllo del numero di operatori in relazione alle istanze di subsystems
+  fail:
+    msg: "Ci sono più di 100 operatori per ogni istanza di subsystem"
+  when: {{ configurazione.numero_max_operatori }} / {{ configurazione|json_query('subsystem[*].istanze')|sum }} > 100
+      
