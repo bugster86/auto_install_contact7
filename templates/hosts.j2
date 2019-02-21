@@ -1,5 +1,5 @@
 127.0.0.1       localhost localhost.localdomain
-
+{% if configurazione | json_query('servers[?contains(@.name, \'-cti\') == `true`]') | length > 0 or configurazione | json_query('servers[?contains(@.name, \'-ipt\') == `true`]') | length > 0 or configurazione | json_query('servers[?contains(@.name, \'-msa\') == `true`]') | length > 0 or configurazione | json_query('servers[?contains(@.name, \'-stc\') == `true`]') | length > 0 %}
 ####################################################################################
 #                 SISTEMA CONTACT
 ####################################################################################
@@ -8,7 +8,9 @@
 {{ item.ip }}   {{ item.name }}.{{ configurazione | json_query('domain') }}   {{ item.name }} {% if item.name is search ("-cti1") %} redis-host  cti-host{% endif %} {% if item.name is search ("-stc1") %}easycim.ct6service.reitek.com{% endif %} 
 {% endif %}
 {% endfor %}
+{% endif %}
 
+{% if configurazione | json_query('servers[?contains(@.name, \'-ecas\') == `true`]') | length > 0 %}
 ####################################################################################
 #                 APPLICATIVI EASYCIM
 ####################################################################################
@@ -17,7 +19,9 @@
 {{ item.ip }}   {{ item.name }}.{{ configurazione | json_query('domain') }}   {{ item.name }} {% if item.name is search ("-ecas1") %} easycim.callback.service easycim.callback.services.reitek.com easycim.services.reitek.com ec-host easycim3-host easycim3.services.reitek.com easyintegration.reitek.com {% endif %} {% if item.ip == ansible_default_ipv4.address %} phantomjs-hosts {% endif %}
 {% endif %}
 {% endfor %}
+{% endif %}
 
+{% if configurazione | json_query('servers[?contains(@.name, \'-bal\') == `true`]') | length > 0 %}
 ####################################################################################
 #                 BALANCER
 ####################################################################################
@@ -26,7 +30,9 @@
 {{ item.ip }}   {{ item.name }}.{{ configurazione | json_query('domain') }}   {{ item.name }} 
 {% endif %}
 {% endfor %}
+{% endif %}
 
+{% if configurazione | json_query('servers[?contains(@.name, \'-ecdb\') == `true`]') | length > 0 %}
 ####################################################################################
 #                 DATABASE
 ####################################################################################
@@ -35,7 +41,9 @@
 {{ item.ip }}   {{ item.name }}.{{ configurazione | json_query('domain') }}   {{ item.name }} 
 {% endif %}
 {% endfor %}
+{% endif %}
 
+{% if configurazione | json_query('servers[?contains(@.name, \'-rec\') == `true`]') | length > 0  or configurazione | json_query('servers[?contains(@.name, \'-erep\') == `true`]') | length > 0%}
 ####################################################################################
 #                 REGISTRATORI
 ####################################################################################
@@ -44,7 +52,9 @@
 {{ item.ip }}   {{ item.name }}.{{ configurazione | json_query('domain') }}   {{ item.name }} 
 {% endif %}
 {% endfor %}
+{% endif %}
 
+{% if configurazione | json_query('servers[?contains(@.name, \'-as\') == `true`]') | length > 0 %}
 ####################################################################################
 #                 CUSTOM SERVER
 ####################################################################################
@@ -53,10 +63,13 @@
 {{ item.ip }}   {{ item.name }}.{{ configurazione | json_query('domain') }}   {{ item.name }} 
 {% endif %}
 {% endfor %}
+{% endif %}
 
+{% if configurazione.virtual_ip is defined %}
 ####################################################################################
 #                 VIRTUAL IP
 ####################################################################################
 {% for item in configurazione | json_query('virtual_ip') %}
 {{ item.ip }}    {{ item.name }}
 {% endfor %}
+{% endif %}
