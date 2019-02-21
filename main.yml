@@ -22,6 +22,9 @@
 
   - name: stampo la configurazione
     debug: var=configurazione
+    
+  - name: Controllo se i parametri inseriti hanno un senso
+    include_tasks: include/check_configurazione.yml
       
   - name: "Mi assicuro che la macchina non sia presente"
     include_tasks: include/elimina_vm.yml

@@ -48,6 +48,8 @@
 	"_comment": "I dati che riguardano il punto in cui posizionare le VM su cluster vmware",
 	"cluster": "Shared Cluster",
 	"datacenter": "Shared Cluster",
-	"folder": "/vm/IMG Italy 47 6100/R&D/Quality Assurance/Test Install Scalati"
+	"folder": "/vm/IMG Italy 47 6100/R&D/Quality Assurance/Test Install Scalati",
+	"subsystem": 2,
+	"numero_max_operatori": 200
 
 }

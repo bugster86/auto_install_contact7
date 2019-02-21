@@ -1,0 +1,19 @@
+- name: controllo degli indirizzi IP
+    fail:
+      msg: "l'ip specificato {{ item }} non è valido"
+    when: item | ipaddr == false
+    with_items:
+    - "{{ configurazione.netmask }}"
+    - "{{ configurazione.gateway }}"
+    - "{{ configurazione.dns1 }}"
+    - "{{ configurazione.dns2 }}"
+    - "{{ configurazione.ntp_server }}"
+    - "{{ configurazione | json_query('servers[*].ip') }}"
+    
+- block:
+  - fail:
+     msg: "l'ip specificato {{ item }} non è valido"
+    when: item | ipaddr == false
+    with_items:
+    - "{{ configurazione | json_query('virtual_ip[*].ip') }}"
+  when: configurazione.virtual_ip is defined    
