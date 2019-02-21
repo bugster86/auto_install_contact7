@@ -27,4 +27,5 @@
   fail:
     msg: "Ci sono più di 100 operatori per ogni istanza di subsystem"
   when: {{ configurazione.numero_max_operatori }} / {{ configurazione|json_query('subsystem[*].istanze')|sum }} > 100
+  
       
